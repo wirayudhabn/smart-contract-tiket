@@ -565,9 +565,10 @@ btnBuyTicket.addEventListener("click", async () => {
 
     // Panggil fungsi buyTicket() dengan value 0.01 ETH
     const tx = await contract.buyTicket({ value: ticketPrice });
+    const txHash = tx.hash; // SIMPAN TX HASH
 
     showToast("info", "Transaksi Dikirim",
-      `Menunggu konfirmasi blok... Hash: ${shortenAddress(tx.hash)}`);
+      `Menunggu konfirmasi blok... Hash: ${shortenAddress(txHash)}`);
 
     // Tunggu 1 konfirmasi blok
     const receipt = await tx.wait(1);
@@ -594,9 +595,9 @@ btnBuyTicket.addEventListener("click", async () => {
     buyResultId.textContent = `#${displayId}`;
     buyResultWrap.classList.remove("hidden");
 
-    // SAVE TICKET KE LOCAL STORAGE
+    // SAVE TICKET KE LOCAL STORAGE (dengan TX HASH)
     if (ticketId) {
-      saveTicketToStorage(ticketId);
+      saveTicketToStorage(ticketId, txHash);
       loadMyTickets(); // Refresh dashboard
     }
 
@@ -833,29 +834,31 @@ if (window.ethereum) {
 // ============================================================
 
 /**
- * Simpan Ticket ID ke localStorage (JSON format)
+ * Simpan Ticket ID & Transaction Hash ke localStorage (JSON format)
  * @param {string} ticketId - ID tiket yang baru dibeli
+ * @param {string} txHash - Transaction hash dari Ethereum
  */
-function saveTicketToStorage(ticketId) {
+function saveTicketToStorage(ticketId, txHash) {
   try {
     const tickets = JSON.parse(localStorage.getItem("amTickets")) || [];
     
-    // Tambah tiket dengan timestamp
+    // Tambah tiket dengan timestamp & tx hash
     tickets.push({
       id: ticketId,
+      txHash: txHash,
       bought: new Date().toLocaleString(),
       timestamp: Date.now(),
     });
     
     localStorage.setItem("amTickets", JSON.stringify(tickets));
-    console.log(`✓ Ticket #${ticketId} saved to storage`);
+    console.log(`✓ Ticket #${ticketId} saved to storage with txHash: ${shortenAddress(txHash)}`);
   } catch (err) {
     console.error("Error saving ticket:", err);
   }
 }
 
 /**
- * Muat dan tampilkan semua tiket dari localStorage
+ * Muat dan tampilkan semua tiket dari localStorage dengan link Etherscan
  */
 function loadMyTickets() {
   try {
@@ -877,28 +880,49 @@ function loadMyTickets() {
     tickets.sort((a, b) => b.timestamp - a.timestamp);
     
     // Render ticket cards
-    const ticketsHtml = tickets.map((ticket, index) => `
-      <div class="glass-card rounded p-4 flex items-start justify-between gap-4 hover:bg-white/[0.06] transition">
+    const ticketsHtml = tickets.map((ticket, index) => {
+      const etherscanLink = ticket.txHash ? `https://sepolia.etherscan.io/tx/${ticket.txHash}` : "#";
+      return `
+      <div class="glass-card rounded p-4 flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 xs:gap-4 hover:bg-white/[0.06] transition">
         <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-2">
+          <div class="flex items-center gap-2 mb-2 flex-wrap">
             <span class="text-ghost font-mono font-bold text-sm">#{ticket.id}</span>
             <span class="text-[10px] text-silver/50 bg-white/[0.05] px-2 py-0.5 rounded">Tiket ${index + 1}</span>
           </div>
-          <p class="text-silver/60 text-xs">Dibeli: ${ticket.bought}</p>
+          <p class="text-silver/60 text-xs mb-2">Dibeli: ${ticket.bought}</p>
+          ${ticket.txHash ? `<a href="${etherscanLink}" target="_blank" class="text-[10px] text-silver hover:text-ghost transition font-mono flex items-center gap-1">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            ${shortenAddress(ticket.txHash)}
+          </a>` : ""}
         </div>
-        <button
-          class="btn-secondary px-3 py-1.5 rounded text-xs flex-shrink-0 whitespace-nowrap"
-          onclick="copyToClipboard('${ticket.id}')"
-          title="Copy Ticket ID"
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; margin-right:4px;">
-            <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-          </svg>
-          COPY
-        </button>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button
+            class="btn-secondary px-3 py-1.5 rounded text-xs whitespace-nowrap"
+            onclick="copyToClipboard('${ticket.id}')"
+            title="Copy Ticket ID"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; margin-right:4px;">
+              <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+            COPY
+          </button>
+          ${ticket.txHash ? `<a href="${etherscanLink}" target="_blank" class="btn-secondary px-3 py-1.5 rounded text-xs whitespace-nowrap hover:bg-white/[0.1] transition" title="View on Etherscan">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; margin-right:4px;">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            VIEW
+          </a>` : ""}
+        </div>
       </div>
-    `).join("");
+    `;
+    }).join("");
     
     myTicketsList.innerHTML = ticketsHtml;
   } catch (err) {
