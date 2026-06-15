@@ -24,6 +24,10 @@
     tailwind.config = {
       theme: {
         extend: {
+          // Breakpoint tambahan: xs (480px) untuk layar kecil-menengah
+          screens: {
+            'xs': '480px',
+          },
           colors: {
             obsidian:  '#0B0B0B',
             carbon:    '#111111',
@@ -318,12 +322,17 @@
        HEADER / NAVBAR
   ════════════════════════════════════════════════════════════════ -->
   <header id="main-header" class="sticky top-0 z-50 border-b border-white/[0.06] bg-obsidian/90 backdrop-blur-xl">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <div class="flex items-center justify-between h-16 gap-4">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6">
+      <!--
+        h-auto + min-h dan py kecil agar header tidak terlalu tinggi di xs,
+        namun tetap 64px di sm ke atas.
+        flex-wrap: nowrap selalu, tapi tiap sisi punya min-w-0 untuk shrink.
+      -->
+      <div class="flex items-center justify-between min-h-[56px] sm:h-16 py-2 sm:py-0 gap-2 sm:gap-4">
 
         <!-- Logo / Brand -->
-        <div class="flex items-center gap-4 min-w-0">
-          <!-- AM Waveform SVG Ornament -->
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0 flex-shrink">
+          <!-- AM Waveform SVG — hanya tampil sm ke atas -->
           <div class="hidden sm:block flex-shrink-0" aria-hidden="true">
             <svg class="waveform-svg" width="64" height="28" viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 14 C4 14, 4 4,  8 4  C12 4,  12 24, 16 24
@@ -335,9 +344,11 @@
           </div>
 
           <div class="min-w-0">
-            <h1 class="font-display font-black text-white text-sm sm:text-base tracking-tight leading-none truncate">
+            <!-- Di layar xs, sembunyikan teks "// ON-CHAIN AUDIT SYSTEM" agar tidak overflow -->
+            <h1 class="font-display font-black text-white text-[11px] xs:text-sm sm:text-base tracking-tight leading-none">
               AM-TICKETS
-              <span class="text-silver font-light"> // ON-CHAIN AUDIT SYSTEM</span>
+              <span class="text-silver font-light hidden xs:inline"> //</span>
+              <span class="text-silver font-light hidden sm:inline"> ON-CHAIN AUDIT SYSTEM</span>
             </h1>
             <p class="text-silver text-[10px] tracking-[0.2em] uppercase mt-0.5 hidden sm:block">
               SEPOLIA TESTNET · ARCTIC MONKEYS CONCERT SERIES
@@ -346,25 +357,26 @@
         </div>
 
         <!-- Wallet Controls -->
-        <div class="flex items-center gap-3 flex-shrink-0">
-          <!-- Role Badge (hidden until connected) -->
+        <div class="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+
+          <!-- Role Badge: hanya tampil di md ke atas agar tidak penuh di HP kecil -->
           <div id="role-badge-wrapper" class="hidden fade-in">
-            <span id="role-badge" class="role-badge fan">ROLE: FAN / PENONTON</span>
+            <span id="role-badge" class="role-badge fan hidden md:inline-block">ROLE: FAN / PENONTON</span>
           </div>
 
-          <!-- Wallet Address Display (hidden until connected) -->
-          <div id="wallet-display" class="hidden items-center gap-2 fade-in">
-            <div class="w-2 h-2 rounded-full bg-white/60 animate-pulse flex-shrink-0"></div>
-            <span id="wallet-address" class="text-silver text-xs font-mono truncate max-w-[120px] sm:max-w-none"></span>
+          <!-- Wallet Address: tampil di sm ke atas, truncate ketat di mobile -->
+          <div id="wallet-display" class="hidden items-center gap-1.5 fade-in">
+            <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/60 animate-pulse flex-shrink-0"></div>
+            <span id="wallet-address" class="text-silver text-[10px] sm:text-xs font-mono truncate max-w-[72px] xs:max-w-[96px] sm:max-w-[140px] md:max-w-none"></span>
           </div>
 
           <!-- Connect / Disconnect Button -->
           <button
             id="btn-connect-wallet"
-            class="btn-primary px-4 py-2 rounded text-xs flex items-center gap-2 flex-shrink-0"
+            class="btn-primary px-2.5 sm:px-4 py-1.5 sm:py-2 rounded text-[10px] sm:text-xs flex items-center gap-1.5 sm:gap-2 flex-shrink-0 whitespace-nowrap"
             aria-label="Hubungkan MetaMask wallet"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
               <rect x="2" y="7" width="20" height="14" rx="2"/>
               <path d="M16 3L12 7 8 3"/>
             </svg>
@@ -396,20 +408,26 @@
       </svg>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16 lg:py-20 relative z-10">
       <div class="max-w-2xl">
-        <div class="phase-badge text-silver mb-4">◆ Keamanan Data &amp; Informasi · UAS 2026</div>
-        <h2 class="font-display font-black text-3xl sm:text-5xl text-white leading-tight tracking-tight mb-4">
+        <div class="phase-badge text-silver mb-3 sm:mb-4">◆ Keamanan Data &amp; Informasi · UAS 2026</div>
+        <!--
+          Skala font hero:
+          - xs  (< 480px) : text-2xl  (24px) — tidak memakan terlalu banyak ruang
+          - sm  (640px+)  : text-4xl  (36px)
+          - lg  (1024px+) : text-5xl  (48px)
+        -->
+        <h2 class="font-display font-black text-2xl sm:text-4xl lg:text-5xl text-white leading-tight tracking-tight mb-3 sm:mb-4">
           ARCTIC MONKEYS<br/>
-          <span class="text-silver font-light text-2xl sm:text-4xl">WORLD TOUR 2026</span>
+          <span class="text-silver font-light text-xl sm:text-3xl lg:text-4xl">WORLD TOUR 2026</span>
         </h2>
-        <p class="text-silver/70 text-sm leading-relaxed max-w-lg">
+        <p class="text-silver/70 text-xs sm:text-sm leading-relaxed max-w-lg">
           Sistem tiket berbasis blockchain pertama di atas Sepolia Testnet. Setiap tiket adalah NFT yang tidak dapat dipalsukan,
           dijamin keasliannya melalui on-chain audit trail yang transparan dan immutable.
         </p>
 
-        <!-- Network Status Bar -->
-        <div class="mt-6 inline-flex items-center gap-3 glass-card px-4 py-2.5 rounded text-xs">
+        <!-- Network Status Bar — scroll-x pada xs jika terlalu panjang -->
+        <div class="mt-4 sm:mt-6 inline-flex flex-wrap items-center gap-2 sm:gap-3 glass-card px-3 sm:px-4 py-2 sm:py-2.5 rounded text-[10px] sm:text-xs">
           <span class="flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-white/50 animate-pulse"></span>
             <span class="text-silver">NETWORK</span>
@@ -432,37 +450,43 @@
          SECTION 1 · FASE AKUISISI: GET YOUR PASS
     ────────────────────────────────────────────────────────────── -->
     <section aria-labelledby="section-buy-heading">
-      <div class="flex items-center gap-4 mb-6">
-        <div>
+      <!-- Section header — wrap di xs agar badge tidak terpotong -->
+      <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
+        <div class="flex-shrink-0">
           <div class="phase-badge text-silver mb-1">◆ FASE 01 · AKUISISI</div>
-          <h2 id="section-buy-heading" class="font-display font-black text-white text-xl sm:text-2xl tracking-tight">
+          <h2 id="section-buy-heading" class="font-display font-black text-white text-lg sm:text-2xl tracking-tight">
             GET YOUR PASS
           </h2>
         </div>
-        <div class="flex-1 scanline-divider"></div>
+        <div class="flex-1 min-w-[40px] scanline-divider"></div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 items-start">
 
         <!-- Ticket Visual Card -->
         <div class="ticket-card rounded-xl p-0 overflow-hidden" role="img" aria-label="Tiket konser Arctic Monkeys">
-          <div class="flex">
+          <!--
+            Layout tiket: flex row di semua breakpoint.
+            Stub (kanan) mendapat min-w agar tidak collapse di HP kecil.
+          -->
+          <div class="flex min-h-[160px] sm:min-h-[200px]">
+
             <!-- Main Ticket Body -->
-            <div class="flex-1 p-6 sm:p-8">
-              <div class="flex justify-between items-start mb-6">
-                <div>
+            <div class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+              <div class="flex justify-between items-start mb-4 sm:mb-6">
+                <div class="min-w-0">
                   <p class="phase-badge text-silver/60 mb-1">WORLD TOUR</p>
-                  <p class="font-display font-black text-white text-xl tracking-tight">ARCTIC MONKEYS</p>
+                  <p class="font-display font-black text-white text-base sm:text-xl tracking-tight">ARCTIC MONKEYS</p>
                 </div>
-                <div class="text-right">
+                <div class="text-right flex-shrink-0 ml-2">
                   <p class="phase-badge text-silver/60">SEPOLIA ETH</p>
-                  <p class="font-display font-black text-white text-2xl">0.01</p>
+                  <p class="font-display font-black text-white text-xl sm:text-2xl">0.01</p>
                 </div>
               </div>
 
               <!-- Mini waveform on ticket -->
-              <div class="mb-5" aria-hidden="true">
-                <svg width="100%" height="24" viewBox="0 0 280 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.15;">
+              <div class="mb-3 sm:mb-5" aria-hidden="true">
+                <svg width="100%" height="20" viewBox="0 0 280 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.15;" preserveAspectRatio="none">
                   <path d="M0 12 C8 12, 8 2, 16 2 C24 2, 24 22, 32 22 C40 22, 40 6, 48 6 C56 6, 56 18, 64 18
                             C72 18, 72 4, 80 4 C88 4, 88 20, 96 20 C104 20, 104 8, 112 8 C120 8, 120 16, 128 16
                             C136 16, 136 3, 144 3 C152 3, 152 21, 160 21 C168 21, 168 9, 176 9 C184 9, 184 15, 192 15
@@ -471,31 +495,35 @@
                 </svg>
               </div>
 
-              <div class="grid grid-cols-2 gap-4 text-xs">
+              <!-- Info grid: 2 kolom di semua ukuran (data pendek, aman) -->
+              <div class="grid grid-cols-2 gap-2 sm:gap-4 text-xs">
                 <div>
                   <p class="text-silver/50 uppercase tracking-widest mb-0.5" style="font-size:0.6rem">VENUE</p>
-                  <p class="text-ghost font-semibold">Gelora Bung Karno</p>
+                  <p class="text-ghost font-semibold text-[10px] sm:text-xs">Gelora Bung Karno</p>
                 </div>
                 <div>
                   <p class="text-silver/50 uppercase tracking-widest mb-0.5" style="font-size:0.6rem">DATE</p>
-                  <p class="text-ghost font-semibold">26 JUL 2026</p>
+                  <p class="text-ghost font-semibold text-[10px] sm:text-xs">26 JUL 2026</p>
                 </div>
                 <div>
                   <p class="text-silver/50 uppercase tracking-widest mb-0.5" style="font-size:0.6rem">CATEGORY</p>
-                  <p class="text-ghost font-semibold">FESTIVAL ZONE</p>
+                  <p class="text-ghost font-semibold text-[10px] sm:text-xs">FESTIVAL ZONE</p>
                 </div>
                 <div>
                   <p class="text-silver/50 uppercase tracking-widest mb-0.5" style="font-size:0.6rem">NETWORK</p>
-                  <p class="text-ghost font-semibold font-mono">SEPOLIA</p>
+                  <p class="text-ghost font-semibold font-mono text-[10px] sm:text-xs">SEPOLIA</p>
                 </div>
               </div>
             </div>
 
-            <!-- Tear-off Stub -->
-            <div class="ticket-perforation w-16 flex flex-col items-center justify-between py-6 px-3 bg-white/[0.015]">
+            <!--
+              Tear-off Stub — min-w-[48px] mencegah collapse di layar sempit.
+              w-12 di xs, w-16 di sm ke atas.
+            -->
+            <div class="ticket-perforation w-12 sm:w-16 min-w-[48px] flex flex-col items-center justify-between py-5 sm:py-6 px-2 sm:px-3 bg-white/[0.015]">
               <div class="ticket-hole" style="margin-top:-10px"></div>
               <div class="flex flex-col items-center gap-1 flex-1 justify-center">
-                <span class="text-silver/30 font-bold font-mono" style="writing-mode: vertical-rl; font-size: 0.55rem; letter-spacing: 0.2em;">AM-TICKETS · ON-CHAIN</span>
+                <span class="text-silver/30 font-bold font-mono" style="writing-mode: vertical-rl; font-size: 0.5rem; letter-spacing: 0.18em;">AM-TICKETS · ON-CHAIN</span>
               </div>
               <div class="ticket-hole" style="margin-bottom:-10px"></div>
             </div>
@@ -563,20 +591,20 @@
          SECTION 2 · FASE SIRKULASI: TRANSFER OWNERSHIP
     ────────────────────────────────────────────────────────────── -->
     <section aria-labelledby="section-transfer-heading">
-      <div class="flex items-center gap-4 mb-6">
-        <div>
+      <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
+        <div class="flex-shrink-0">
           <div class="phase-badge text-silver mb-1">◆ FASE 02 · SIRKULASI</div>
-          <h2 id="section-transfer-heading" class="font-display font-black text-white text-xl sm:text-2xl tracking-tight">
+          <h2 id="section-transfer-heading" class="font-display font-black text-white text-lg sm:text-2xl tracking-tight">
             TRANSFER OWNERSHIP
           </h2>
         </div>
-        <div class="flex-1 scanline-divider"></div>
+        <div class="flex-1 min-w-[40px] scanline-divider"></div>
       </div>
 
-      <div class="glass-card rounded-xl p-6 sm:p-8 relative overflow-hidden">
+      <div class="glass-card rounded-xl p-4 sm:p-6 lg:p-8 relative overflow-hidden">
         <span class="section-num" aria-hidden="true">02</span>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8 relative z-10">
           <!-- Form Column -->
           <div class="space-y-4">
             <div>
@@ -656,15 +684,15 @@
     ────────────────────────────────────────────────────────────── -->
     <section aria-labelledby="section-validate-heading">
 
-      <!-- Section Header Row -->
-      <div class="flex items-center gap-4 mb-6">
-        <div>
+      <!-- Section Header Row — wrap di xs agar badge tidak overflow -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-5 sm:mb-6">
+        <div class="flex-shrink-0">
           <div class="phase-badge text-silver mb-1">◆ FASE 03 · KONSUMSI</div>
-          <h2 id="section-validate-heading" class="font-display font-black text-white text-xl sm:text-2xl tracking-tight">
+          <h2 id="section-validate-heading" class="font-display font-black text-white text-lg sm:text-2xl tracking-tight">
             GATEKEEPER VERIFICATION
           </h2>
         </div>
-        <div class="flex-1 scanline-divider"></div>
+        <div class="flex-1 min-w-[40px] scanline-divider"></div>
         <!-- Access level indicator badge -->
         <div id="gatekeeper-access-indicator" class="flex-shrink-0 hidden">
           <span id="gatekeeper-access-badge" class="role-badge fan text-[10px]">ACCESS: DENIED</span>
@@ -733,12 +761,12 @@
              Blur dari overlay di atas yang membuatnya buram.
              Konten di sini TIDAK bergeser saat overlay aktif/nonaktif.
         ══════════════════════════════════════════════════════ -->
-        <div class="relative p-6 sm:p-8 overflow-hidden">
+        <div class="relative p-4 sm:p-6 lg:p-8 overflow-hidden">
           <!-- Background section number decorative -->
           <span class="section-num" aria-hidden="true">03</span>
 
           <!-- Grid dua kolom: Form | Info -->
-          <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
 
             <!-- ── Kolom Kiri: Form Input ── -->
             <div class="space-y-4">
