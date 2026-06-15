@@ -988,4 +988,7 @@ async function initAutoConnect() {
   setupMyTicketsEventListeners();
 }
 
-
+// ────────────────────────────────────────────────────────────
+// JALANKAN INISIALISASI SAAT HALAMAN DIMUAT
+// ────────────────────────────────────────────────────────────
+initAutoConnect();
