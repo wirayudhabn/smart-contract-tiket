@@ -870,7 +870,7 @@ function loadMyTickets() {
       <div class="glass-card rounded p-4 flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 xs:gap-4 hover:bg-white/[0.06] transition">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-2 flex-wrap">
-            <span class="text-ghost font-mono font-bold text-sm">#{ticket.id}</span>
+            <span class="text-ghost font-mono font-bold text-sm">#${ticket.id}</span>
             <span class="text-[10px] text-silver/50 bg-white/[0.05] px-2 py-0.5 rounded">Tiket ${index + 1}</span>
           </div>
           <p class="text-silver/60 text-xs mb-2">Dibeli: ${ticket.bought}</p>
