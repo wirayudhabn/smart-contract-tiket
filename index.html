@@ -396,6 +396,21 @@
         color: #888;
         line-height: 1.4;
       }
+      .toast-close {
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 1rem;
+        cursor: pointer;
+        padding: 0;
+        margin: -2px -4px 0 0;
+        transition: color 0.2s ease;
+        pointer-events: all;
+      }
+      .toast-close:hover {
+        color: #e5e5e5;
+      }
 
       @keyframes toastIn {
         from {

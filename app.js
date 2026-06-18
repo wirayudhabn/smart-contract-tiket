@@ -363,14 +363,24 @@ function showToast(type, title, msg, duration = 5000) {
       <div class="toast-title">${title}</div>
       <div class="toast-msg">${msg}</div>
     </div>
+    <button class="toast-close" aria-label="Tutup notifikasi">✕</button>
   `;
 
   toastContainer.appendChild(toast);
 
-  // Auto-remove setelah durasi habis
-  setTimeout(() => {
+  // Close button handler
+  const closeBtn = toast.querySelector(".toast-close");
+  closeBtn.addEventListener("click", () => {
     toast.classList.add("leaving");
     toast.addEventListener("animationend", () => toast.remove(), { once: true });
+  });
+
+  // Auto-remove setelah durasi habis
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.classList.add("leaving");
+      toast.addEventListener("animationend", () => toast.remove(), { once: true });
+    }
   }, duration);
 }
 
