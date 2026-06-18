@@ -15,7 +15,7 @@
 // ============================================================
 
 /** @type {string} Alamat smart contract hasil deploy di Sepolia */
-const CONTRACT_ADDRESS = "0x6C3591550aA465CB03AC6124A1377e1e9302D9B5";
+const CONTRACT_ADDRESS = "0x03CdB72D9eED941b8D1Bd359eB264f4B8D419c28";
 
 /**
  * @type {Array} ABI dari smart contract ConcertTicketing.
@@ -30,149 +30,244 @@ const CONTRACT_ADDRESS = "0x6C3591550aA465CB03AC6124A1377e1e9302D9B5";
  *  - isTicketUsed(uint256 ticketId) atau tickets(uint256 id)
  */
 const CONTRACT_ABI = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "admin",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "buyTicket",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "hasPurchased",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "maxTickets",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "ticketPrice",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "tickets",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "isUsed",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "totalSold",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_ticketId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_to",
-				"type": "address"
-			}
-		],
-		"name": "transferTicket",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_ticketId",
-				"type": "uint256"
-			}
-		],
-		"name": "validateTicket",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
+  {
+    "inputs": [],
+    "name": "buyTicket",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FundsWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "ticketId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "buyer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pricePaid",
+        "type": "uint256"
+      }
+    ],
+    "name": "TicketPurchased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "ticketId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      }
+    ],
+    "name": "TicketTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "ticketId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "validatedBy",
+        "type": "address"
+      }
+    ],
+    "name": "TicketValidated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ticketId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_to",
+        "type": "address"
+      }
+    ],
+    "name": "transferTicket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ticketId",
+        "type": "uint256"
+      }
+    ],
+    "name": "validateTicket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "admin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "hasPurchased",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxTickets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ticketPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tickets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "isUsed",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSold",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ]
 
 // ============================================================
@@ -201,40 +296,40 @@ const SEPOLIA_CHAIN_ID = 11155111n;
 //  ③ REFERENSI ELEMEN DOM
 // ============================================================
 
-const btnConnectWallet   = document.getElementById("btn-connect-wallet");
-const btnConnectLabel    = document.getElementById("btn-connect-label");
-const walletDisplay      = document.getElementById("wallet-display");
-const walletAddressEl    = document.getElementById("wallet-address");
-const roleBadgeWrapper   = document.getElementById("role-badge-wrapper");
-const roleBadge          = document.getElementById("role-badge");
+const btnConnectWallet = document.getElementById("btn-connect-wallet");
+const btnConnectLabel = document.getElementById("btn-connect-label");
+const walletDisplay = document.getElementById("wallet-display");
+const walletAddressEl = document.getElementById("wallet-address");
+const roleBadgeWrapper = document.getElementById("role-badge-wrapper");
+const roleBadge = document.getElementById("role-badge");
 const networkStatusLabel = document.getElementById("network-status-label");
 
 // Buy Ticket
-const btnBuyTicket   = document.getElementById("btn-buy-ticket");
-const btnBuyLabel    = document.getElementById("btn-buy-label");
-const buyResultWrap  = document.getElementById("buy-result-wrapper");
-const buyResultId    = document.getElementById("buy-result-id");
+const btnBuyTicket = document.getElementById("btn-buy-ticket");
+const btnBuyLabel = document.getElementById("btn-buy-label");
+const buyResultWrap = document.getElementById("buy-result-wrapper");
+const buyResultId = document.getElementById("buy-result-id");
 
 // Transfer Ticket
-const btnTransferTicket   = document.getElementById("btn-transfer-ticket");
-const btnTransferLabel    = document.getElementById("btn-transfer-label");
-const inputTransferId     = document.getElementById("transfer-ticket-id");
-const inputTransferRecip  = document.getElementById("transfer-recipient");
+const btnTransferTicket = document.getElementById("btn-transfer-ticket");
+const btnTransferLabel = document.getElementById("btn-transfer-label");
+const inputTransferId = document.getElementById("transfer-ticket-id");
+const inputTransferRecip = document.getElementById("transfer-recipient");
 
 // Validate Ticket / Gatekeeper
-const btnValidateTicket       = document.getElementById("btn-validate-ticket");
-const btnValidateLabel        = document.getElementById("btn-validate-label");
-const inputValidateId         = document.getElementById("validate-ticket-id");
+const btnValidateTicket = document.getElementById("btn-validate-ticket");
+const btnValidateLabel = document.getElementById("btn-validate-label");
+const inputValidateId = document.getElementById("validate-ticket-id");
 
 // My Tickets Dashboard Elements
-const myTicketsList           = document.getElementById("my-tickets-list");
-const btnRefreshTickets       = document.getElementById("btn-refresh-tickets");
-const btnClearTickets         = document.getElementById("btn-clear-tickets");
-const lockOverlay             = document.getElementById("lock-overlay");
-const gatekeeperAccessInd     = document.getElementById("gatekeeper-access-indicator");
-const gatekeeperAccessBadge   = document.getElementById("gatekeeper-access-badge");
-const validationResult        = document.getElementById("validation-result");
-const validationResultInner   = document.getElementById("validation-result-inner");
+const myTicketsList = document.getElementById("my-tickets-list");
+const btnRefreshTickets = document.getElementById("btn-refresh-tickets");
+const btnClearTickets = document.getElementById("btn-clear-tickets");
+const lockOverlay = document.getElementById("lock-overlay");
+const gatekeeperAccessInd = document.getElementById("gatekeeper-access-indicator");
+const gatekeeperAccessBadge = document.getElementById("gatekeeper-access-badge");
+const validationResult = document.getElementById("validation-result");
+const validationResultInner = document.getElementById("validation-result-inner");
 
 // ============================================================
 //  ④ SISTEM NOTIFIKASI TOAST
@@ -253,8 +348,8 @@ const toastContainer = document.getElementById("toast-container");
 function showToast(type, title, msg, duration = 5000) {
   const icons = {
     success: "✓",
-    error:   "✕",
-    info:    "◈",
+    error: "✕",
+    info: "◈",
   };
 
   const toast = document.createElement("div");
@@ -302,13 +397,13 @@ function shortenAddress(address) {
  */
 function parseError(err) {
   // Ethers v6: cek reason / revert data
-  if (err?.reason)                     return err.reason;
-  if (err?.data?.message)              return err.data.message;
-  if (err?.error?.data?.message)       return err.error.data.message;
+  if (err?.reason) return err.reason;
+  if (err?.data?.message) return err.data.message;
+  if (err?.error?.data?.message) return err.error.data.message;
   if (err?.message?.includes("user rejected")) return "Transaksi ditolak oleh pengguna.";
   if (err?.message?.includes("insufficient funds")) return "Saldo ETH tidak cukup untuk membayar.";
   if (err?.message?.includes("network changed")) return "Jaringan berubah, silakan koneksikan ulang.";
-  if (err?.message)                    return err.message.slice(0, 120);
+  if (err?.message) return err.message.slice(0, 120);
   return "Terjadi kesalahan yang tidak diketahui.";
 }
 
@@ -373,7 +468,7 @@ async function connectWallet() {
     // Request akses akun dari MetaMask
     await provider.send("eth_requestAccounts", []);
 
-    signer        = await provider.getSigner();
+    signer = await provider.getSigner();
     walletAddress = await signer.getAddress();
 
     // ── Verifikasi Jaringan ──────────────────────────────────
@@ -412,9 +507,9 @@ async function connectWallet() {
  */
 function disconnectWallet() {
   walletAddress = null;
-  signer        = null;
-  contract      = null;
-  isOwner       = false;
+  signer = null;
+  contract = null;
+  isOwner = false;
 
   // Reset wallet display
   walletDisplay.classList.add("hidden");
@@ -423,24 +518,24 @@ function disconnectWallet() {
 
   // Reset button
   btnConnectLabel.textContent = "Connect Wallet";
-  btnConnectWallet.disabled   = false;
+  btnConnectWallet.disabled = false;
 
   // Reset network label
   networkStatusLabel.textContent = "NOT CONNECTED";
 
   // Reset buy section
-  btnBuyTicket.disabled     = true;
-  btnBuyLabel.textContent   = "CONNECT WALLET FIRST";
+  btnBuyTicket.disabled = true;
+  btnBuyLabel.textContent = "CONNECT WALLET FIRST";
   buyResultWrap.classList.add("hidden");
 
   // Reset transfer section
-  btnTransferTicket.disabled   = true;
+  btnTransferTicket.disabled = true;
   btnTransferLabel.textContent = "CONNECT WALLET FIRST";
 
   // Reset gatekeeper — kunci overlay (tampilkan) saat disconnect
   applyGatekeeperLock(true);
   gatekeeperAccessInd.classList.add("hidden");
-  btnValidateTicket.disabled   = true;
+  btnValidateTicket.disabled = true;
   btnValidateLabel.textContent = "VALIDATE TICKET & OPEN GATE";
   validationResult.classList.add("hidden");
 }
@@ -461,8 +556,8 @@ function updateWalletUI() {
   networkStatusLabel.textContent = "CONNECTED · SEPOLIA";
 
   // Aktifkan tombol-tombol aksi
-  btnBuyTicket.disabled      = false;
-  btnBuyLabel.textContent    = "BUY TICKET — 0.01 ETH";
+  btnBuyTicket.disabled = false;
+  btnBuyLabel.textContent = "BUY TICKET — 0.01 ETH";
   btnTransferTicket.disabled = false;
   btnTransferLabel.textContent = "TRANSFER TICKET";
 }
@@ -499,10 +594,10 @@ async function checkOwnerRole() {
 
   if (isOwner) {
     roleBadge.textContent = "ROLE: PROMOTOR / ADMIN";
-    roleBadge.className   = "role-badge promotor";
+    roleBadge.className = "role-badge promotor";
   } else {
     roleBadge.textContent = "ROLE: FAN / PENONTON";
-    roleBadge.className   = "role-badge fan";
+    roleBadge.className = "role-badge fan";
   }
 
   // ── Update Gatekeeper Access ─────────────────────────────
@@ -512,15 +607,15 @@ async function checkOwnerRole() {
     // Buka kunci Gatekeeper untuk Promotor
     applyGatekeeperLock(false);
     gatekeeperAccessBadge.textContent = "ACCESS: GRANTED";
-    gatekeeperAccessBadge.className   = "role-badge promotor text-[10px]";
-    btnValidateTicket.disabled        = false;
-    btnValidateLabel.textContent      = "VALIDATE TICKET & OPEN GATE";
+    gatekeeperAccessBadge.className = "role-badge promotor text-[10px]";
+    btnValidateTicket.disabled = false;
+    btnValidateLabel.textContent = "VALIDATE TICKET & OPEN GATE";
   } else {
     // Kunci Gatekeeper untuk Fan biasa
     applyGatekeeperLock(true);
     gatekeeperAccessBadge.textContent = "ACCESS: DENIED";
-    gatekeeperAccessBadge.className   = "role-badge fan text-[10px]";
-    btnValidateTicket.disabled        = true;
+    gatekeeperAccessBadge.className = "role-badge fan text-[10px]";
+    btnValidateTicket.disabled = true;
   }
 }
 
@@ -558,42 +653,42 @@ function applyGatekeeperLock(locked) {
 // ⑧ FITUR WEB3: BUY TICKET
 // ============================================================
 btnBuyTicket.addEventListener("click", async () => {
-    if (!contract) return;
-    setLoading(btnBuyTicket, btnBuyLabel, true);
-    buyResultWrap.classList.add("hidden"); 
+  if (!contract) return;
+  setLoading(btnBuyTicket, btnBuyLabel, true);
+  buyResultWrap.classList.add("hidden");
 
-    try {
-        // 1. Tentukan harga tiket
-        const ticketPrice = ethers.parseEther("0.01");
+  try {
+    // 1. Tentukan harga tiket
+    const ticketPrice = ethers.parseEther("0.01");
 
-        // 2. Panggil fungsi buyTicket di smart contract dan kirim value ETH
-        const tx = await contract.buyTicket({ value: ticketPrice });
-        showToast("info", "Memproses...", "Harap tunggu transaksi dikonfirmasi.");
+    // 2. Panggil fungsi buyTicket di smart contract dan kirim value ETH
+    const tx = await contract.buyTicket({ value: ticketPrice });
+    showToast("info", "Memproses...", "Harap tunggu transaksi dikonfirmasi.");
 
-        // 3. Tunggu hingga transaksi dikonfirmasi oleh jaringan (1 block)
-        const receipt = await tx.wait(1);
+    // 3. Tunggu hingga transaksi dikonfirmasi oleh jaringan (1 block)
+    const receipt = await tx.wait(1);
 
-        // 4. Ambil Ticket ID terbaru.
-        // Karena di Solidity totalSold di-increment sebelum pembuatan tiket,
-        // ID tiket terbaru sama persis dengan angka totalSold saat ini.
-        const totalSold = await contract.totalSold();
-        const ticketId = totalSold.toString(); // <-- Bagian ini yang diubah (hilangkan - 1n)
+    // 4. Ambil Ticket ID terbaru.
+    // Karena di Solidity totalSold di-increment sebelum pembuatan tiket,
+    // ID tiket terbaru sama persis dengan angka totalSold saat ini.
+    const totalSold = await contract.totalSold();
+    const ticketId = totalSold.toString(); // <-- Bagian ini yang diubah (hilangkan - 1n)
 
-        // 5. Tampilkan hasilnya ke UI menggantikan strip "--"
-        buyResultId.textContent = ticketId;
-        buyResultWrap.classList.remove("hidden");
+    // 5. Tampilkan hasilnya ke UI menggantikan strip "--"
+    buyResultId.textContent = ticketId;
+    buyResultWrap.classList.remove("hidden");
 
-        // 6. Simpan riwayat tiket ke Local Storage (sudah ada di fungsi Anda)
-        saveTicketToStorage(ticketId, receipt.hash);
+    // 6. Simpan riwayat tiket ke Local Storage (sudah ada di fungsi Anda)
+    saveTicketToStorage(ticketId, receipt.hash);
 
-        showToast("success", "Pembelian Berhasil", `Anda berhasil membeli tiket dengan ID #${ticketId}.`);
+    showToast("success", "Pembelian Berhasil", `Anda berhasil membeli tiket dengan ID #${ticketId}.`);
 
-    } catch (err) {
-        const msg = parseError(err);
-        showToast("error", "Pembelian Gagal", msg);
-    } finally {
-        setLoading(btnBuyTicket, btnBuyLabel, false, "BUY TICKET — 0.01 ETH");
-    }
+  } catch (err) {
+    const msg = parseError(err);
+    showToast("error", "Pembelian Gagal", msg);
+  } finally {
+    setLoading(btnBuyTicket, btnBuyLabel, false, "BUY TICKET — 0.01 ETH");
+  }
 });
 
 // ============================================================
@@ -616,7 +711,7 @@ btnBuyTicket.addEventListener("click", async () => {
 btnTransferTicket.addEventListener("click", async () => {
   if (!contract) return;
 
-  const ticketIdRaw   = inputTransferId.value.trim();
+  const ticketIdRaw = inputTransferId.value.trim();
   const recipientAddr = inputTransferRecip.value.trim();
 
   // ── Validasi Input Sisi Klien ────────────────────────────
@@ -651,7 +746,7 @@ btnTransferTicket.addEventListener("click", async () => {
     await tx.wait(1);
 
     // Bersihkan form
-    inputTransferId.value    = "";
+    inputTransferId.value = "";
     inputTransferRecip.value = "";
 
     showToast("success", "Transfer Berhasil! ✓",
@@ -760,8 +855,8 @@ btnValidateTicket.addEventListener("click", async () => {
  */
 function showValidationResult(success, ticketId, message, status) {
   const borderColor = success ? "border-white/20" : "border-red-800/40";
-  const statusColor = success ? "text-white"      : "text-red-400";
-  const icon        = success ? "✓" : "✕";
+  const statusColor = success ? "text-white" : "text-red-400";
+  const icon = success ? "✓" : "✕";
 
   validationResultInner.className =
     `p-4 rounded border text-xs space-y-2 ${borderColor} bg-white/[0.03]`;
@@ -825,7 +920,7 @@ if (window.ethereum) {
 function saveTicketToStorage(ticketId, txHash) {
   try {
     const tickets = JSON.parse(localStorage.getItem("amTickets")) || [];
-    
+
     // Tambah tiket dengan timestamp & tx hash
     tickets.push({
       id: ticketId,
@@ -833,7 +928,7 @@ function saveTicketToStorage(ticketId, txHash) {
       bought: new Date().toLocaleString(),
       timestamp: Date.now(),
     });
-    
+
     localStorage.setItem("amTickets", JSON.stringify(tickets));
     console.log(`✓ Ticket #${ticketId} saved to storage with txHash: ${shortenAddress(txHash)}`);
   } catch (err) {
@@ -847,10 +942,10 @@ function saveTicketToStorage(ticketId, txHash) {
 function loadMyTickets() {
   try {
     const tickets = JSON.parse(localStorage.getItem("amTickets")) || [];
-    
+
     // Clear container
     myTicketsList.innerHTML = "";
-    
+
     if (tickets.length === 0) {
       myTicketsList.innerHTML = `
         <div class="text-center py-8">
@@ -859,10 +954,10 @@ function loadMyTickets() {
       `;
       return;
     }
-    
+
     // Sort by timestamp (newest first)
     tickets.sort((a, b) => b.timestamp - a.timestamp);
-    
+
     // Render ticket cards
     const ticketsHtml = tickets.map((ticket, index) => {
       const etherscanLink = ticket.txHash ? `https://sepolia.etherscan.io/tx/${ticket.txHash}` : "#";
@@ -907,7 +1002,7 @@ function loadMyTickets() {
       </div>
     `;
     }).join("");
-    
+
     myTicketsList.innerHTML = ticketsHtml;
   } catch (err) {
     console.error("Error loading tickets:", err);
@@ -935,7 +1030,7 @@ function setupMyTicketsEventListeners() {
     loadMyTickets();
     showToast("info", "Refreshed", "Ticket list updated.");
   });
-  
+
   btnClearTickets?.addEventListener("click", () => {
     if (confirm("Hapus semua riwayat tiket? Aksi ini tidak dapat dibatalkan.")) {
       localStorage.removeItem("amTickets");
@@ -966,7 +1061,7 @@ async function initAutoConnect() {
   } catch (err) {
     console.warn("Auto-connect gagal:", parseError(err));
   }
-  
+
   // Load My Tickets dari localStorage
   loadMyTickets();
   setupMyTicketsEventListeners();
