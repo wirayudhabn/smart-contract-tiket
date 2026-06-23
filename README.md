@@ -4,16 +4,14 @@
 
 **Decentralized Concert Ticketing on Ethereum**
 
-[![Build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/wirayudhabn/arctic-monkeys-tickets)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](./LICENSE)
-[![Solidity](https://img.shields.io/badge/Solidity-v0.8.0+-363636?style=flat-square&logo=solidity)](https://docs.soliditylang.org)
+[![Solidity](https://img.shields.io/badge/Solidity-v0.8.20-363636?style=flat-square&logo=solidity)](https://docs.soliditylang.org)
 [![Ethers.js](https://img.shields.io/badge/Ethers.js-v6-8A2BE2?style=flat-square)](https://docs.ethers.org/v6/)
 [![Network](https://img.shields.io/badge/Network-Sepolia_Testnet-F6851B?style=flat-square&logo=ethereum)](https://sepolia.etherscan.io)
-[![OpenZeppelin](https://img.shields.io/badge/OpenZeppelin-ERC--721-4E5EE4?style=flat-square)](https://docs.openzeppelin.com/contracts/4.x/erc721)
 
 A blockchain-based ticketing dApp built on Ethereum Sepolia Testnet to prevent ticket fraud, scalping, and double-spending through on-chain verification, immutable audit trails, and role-based access control.
 
-[Live Demo](https://am-tickets.vercel.app) · [Smart Contract](https://sepolia.etherscan.io/address/0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5) · [Report a Bug](https://github.com/wirayudhabn/arctic-monkeys-tickets/issues) · [Discussions](https://github.com/wirayudhabn/arctic-monkeys-tickets/discussions)
+[Smart Contract](https://sepolia.etherscan.io/address/0xc17a578de92486982E33BE15e215E4aa9c8Ab177)
 
 </div>
 
@@ -30,22 +28,21 @@ A blockchain-based ticketing dApp built on Ethereum Sepolia Testnet to prevent t
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
 
 ## Overview
 
-**AM-TICKETS** is a decentralized application (dApp) simulating a concert ticketing system for the *Arctic Monkeys World Tour 2026*. It demonstrates real-world application of data security principles in a Web3 context — treating ticket ownership as a non-fungible on-chain asset managed through Ethereum smart contracts.
+**AM-TICKETS** is a decentralized application (dApp) simulating a concert ticketing system for the *Arctic Monkeys World Tour 2026*. It demonstrates real-world application of data security principles in a Web3 context — treating ticket ownership as a unique, non-fungible on-chain asset managed through a custom Ethereum smart contract.
 
 Built as a final project (UAS) for **Keamanan Data dan Informasi** at Universitas Primakara, under the supervision of Pak Made Adi.
 
 **Core guarantees:**
 
-- Every ticket is a unique ERC-721 NFT — no duplicates, no counterfeits
+- Every ticket has a unique ID and is mapped to a single owner — no duplicates, no counterfeits
 - All ownership changes are atomic and permanently logged on-chain
-- Validation is gated by on-chain role-based access control, not application logic
+- Validation is gated by on-chain role-based access control (RBAC) via the `onlyAdmin` modifier
 - No central database — Ethereum is the single source of truth
 
 ---
@@ -56,9 +53,9 @@ The digital ticketing industry faces systemic security vulnerabilities that cent
 
 | Problem | Real-World Impact | AM-TICKETS Solution |
 |---|---|---|
-| **Scalping** | Resale prices 3–5× face value | Max 5 tickets per wallet, enforced on-chain |
-| **Counterfeit tickets** | Fake tickets indistinguishable from real | Every ticket is a unique NFT on a public ledger |
-| **Double-spending** | One ticket redeemed multiple times | Atomic state transfer; used tickets cannot be re-transferred |
+| **Scalping & Calo** | Resale prices skyrocket due to bots/scalpers | Max 1 ticket per wallet limit, enforced on-chain |
+| **Counterfeit tickets** | Fake tickets indistinguishable from real | Each ticket is uniquely mapped on a public blockchain ledger |
+| **Double-spending** | One ticket redeemed multiple times | Atomic state transfer; used tickets cannot be transferred or reused |
 | **Centralized failure** | Single database = single attack surface | No central server; data lives across Ethereum's validator network |
 | **Unauthorized validation** | Anyone can claim to be a gate staff | RBAC enforced at contract level via `onlyAdmin` modifier |
 
@@ -66,30 +63,24 @@ The digital ticketing industry faces systemic security vulnerabilities that cent
 
 ## Features
 
-### 🎟 Ticket Minting
-
+### 🎟 Ticket Purchasing
 - Fixed price: **0.01 Sepolia ETH** per ticket
-- Hard cap: **5 tickets per wallet** (anti-scalping)
-- Each ticket minted as a unique ERC-721 NFT
-- Balance and allowance validation before transaction submission
+- Hard cap: **1 ticket per wallet** (anti-scalping / anti-calo)
+- Balance and value validation before transaction execution
 
 ### 🔄 Ticket Transfer
-
-- Atomic ownership transfer — previous owner loses access immediately
-- Transfer blocked for tickets already marked as used
+- Atomic ownership transfer — previous owner loses access automatically
+- Transfer blocked if the ticket has already been used or if the recipient already owns a ticket
 - Full ownership history available via on-chain event logs
 
 ### ✅ Gate Validation (Admin Only)
+- Ticket validation callable only by the contract Admin/Promoter
+- Validation UI is blocked (blurred overlay) for non-admin wallets
+- Every validated ticket is marked as used, preventing replay attacks at the gate
+- Successful validations emit events for an immutable audit trail
 
-- `markTicketAsUsed` callable only by addresses with admin role
-- Validation UI is blocked (blur + disabled) for non-admin wallets
-- Every validation timestamped and logged as an immutable on-chain event
-
-### 🔐 Role Management (Owner Only)
-
-- Contract deployer (owner) assigns admin roles via `setAdminRole`
-- Admin roles verifiable publicly via `isAdmin` query
-- All role grants emit `AdminRoleGranted` events for auditability
+### 💰 Funds Withdrawal (Admin Only)
+- Admin can withdraw all accumulated ticket sale funds from the contract
 
 ---
 
@@ -98,24 +89,22 @@ The digital ticketing industry faces systemic security vulnerabilities that cent
 AM-TICKETS implements five security pillars aligned with industry standards:
 
 ### A. Access Control & Authentication
-
 ```
 MetaMask Wallet Authentication
 → Identity = cryptographic address; no username/password attack surface
 → Private keys never touch the frontend
 
 Role-Based Access Control (RBAC) — enforced on-chain
-→ mapping(address => bool) admins
+→ address public admin; (set to contract deployer in constructor)
 → onlyAdmin modifier blocks unauthorized calls at the EVM level
-→ Frontend UI reinforces this; contract enforces it
+→ Frontend UI reinforces this by displaying Admin controls only to the owner
 ```
 
 ### B. Data Integrity & Immutability
-
 ```
 Blockchain as Immutable Ledger
 → Ticket state stored in contract; no mutable off-chain database
-→ keccak256 hashing prevents historical data tampering
+→ Cryptographic consensus prevents historical data tampering
 → Ethereum PoS consensus ensures data agreement across nodes
 
 State Verification
@@ -124,7 +113,6 @@ State Verification
 ```
 
 ### C. Confidentiality & Secure Communication
-
 ```
 MetaMask Key Management
 → Private keys are never exposed to the dApp
@@ -136,7 +124,6 @@ Sepolia Testnet Isolation
 ```
 
 ### D. Availability & Resilience
-
 ```
 Decentralized Infrastructure
 → Thousands of Ethereum validators run the contract independently
@@ -145,13 +132,12 @@ Decentralized Infrastructure
 ```
 
 ### E. Audit Trail & Non-Repudiation
-
 ```
 On-Chain Event Logs
-→ Transfer(from, to, tokenId) — every ownership change
-→ TicketUsed(tokenId, timestamp) — every validation
-→ AdminRoleGranted(account) — every role assignment
-→ TicketMinted(buyer, quantity, totalPrice) — every purchase
+→ TicketPurchased(ticketId, buyer, pricePaid) — every purchase
+→ TicketTransferred(ticketId, from, to) — every ownership change
+→ TicketValidated(ticketId, validatedBy) — every gate validation
+→ FundsWithdrawn(to, amount) — ticket sales withdrawals
 
 All events are immutable, cryptographically signed, and publicly verifiable
 ```
@@ -163,13 +149,11 @@ All events are immutable, cryptographically signed, and publicly verifiable
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
 | Blockchain | Ethereum Sepolia | Testnet | Public ledger & PoS consensus |
-| Smart Contract | Solidity | v0.8.0+ | ERC-721 NFT logic & RBAC |
+| Smart Contract | Solidity | v0.8.20 | Custom ticket logic & admin RBAC |
 | Web3 Integration | Ethers.js | v6 | Contract interaction & ABI encoding |
 | Wallet | MetaMask | Latest | Authentication & transaction signing |
 | Frontend | HTML5 + Vanilla JS | ES6+ | UI structure & logic |
 | Styling | Tailwind CSS | v3 (CDN) | Responsive utility-first design |
-| Hosting | Vercel | — | Serverless frontend deployment |
-| Contract IDE | Remix IDE | — | Contract development & deployment |
 
 ### System Architecture
 
@@ -178,7 +162,7 @@ All events are immutable, cryptographically signed, and publicly verifiable
 │               USER INTERFACE                │
 │     HTML5 · Vanilla JS · Tailwind CSS       │
 │                                             │
-│  [ Mint ]  [ Transfer ]  [ Validate ]       │
+│  [ Buy ]  [ Transfer ]  [ Validate ]        │
 │  [ Wallet Connect ]  [ Admin Panel ]        │
 └──────────────────┬──────────────────────────┘
                    │
@@ -195,9 +179,9 @@ All events are immutable, cryptographically signed, and publicly verifiable
 │           SMART CONTRACT LAYER              │
 │        Solidity · Sepolia Testnet           │
 │                                             │
-│  · Minting logic       · RBAC enforcement  │
-│  · Transfer logic      · State management  │
-│  · Event emission      · Access modifiers  │
+│  · TicketPurchased     · RBAC enforcement  │
+│  · TicketTransferred   · State management  │
+│  · TicketValidated     · Access modifiers  │
 └──────────────────┬──────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────┐
@@ -219,61 +203,35 @@ All events are immutable, cryptographically signed, and publicly verifiable
 | Field | Value |
 |---|---|
 | **Network** | Ethereum Sepolia Testnet |
-| **Standard** | ERC-721 (OpenZeppelin) |
-| **Contract Address** | `0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5` |
+| **Contract Name** | `TicketBlock` |
+| **Contract Address** | `0xc17a578de92486982E33BE15e215E4aa9c8Ab177` |
 | **Status** | Active & Verified |
 
-🔍 **[View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5)** — source code, transactions, read/write interface
+🔍 **[View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xc17a578de92486982E33BE15e215E4aa9c8Ab177)** — source code, transactions, read/write interface
 
-### ABI Reference
+### Core Solidity Functions
 
 ```solidity
-// ─── MINTING ────────────────────────────────────────────
-function mint(uint256 quantity) public payable
-// Buy tickets. 0.01 ETH each. Max 5 per wallet.
+// Buy a ticket (0.01 ETH, limit 1 per wallet)
+function buyTicket() public payable;
 
-// ─── OWNERSHIP ──────────────────────────────────────────
-function transferTicket(address to, uint256 tokenId) public
-// Transfer ownership atomically. Blocks used tickets.
+// Transfer ticket ownership to another address
+function transferTicket(uint256 _ticketId, address _to) public;
 
-function ownerOf(uint256 tokenId) public view returns (address)
-// Query current ticket owner.
+// Validate ticket at the gate (Admin only)
+function validateTicket(uint256 _ticketId) public onlyAdmin;
 
-function balanceOf(address owner) public view returns (uint256)
-// Query how many tickets an address holds.
-
-function totalSupply() public view returns (uint256)
-// Total tickets minted.
-
-// ─── VALIDATION (Admin only) ─────────────────────────────
-function markTicketAsUsed(uint256 tokenId) public onlyAdmin
-// Mark ticket as redeemed at the gate.
-
-function isTicketUsed(uint256 tokenId) public view returns (bool)
-// Check if ticket has been validated.
-
-// ─── ACCESS CONTROL (Owner only) ────────────────────────
-function setAdminRole(address account) public onlyOwner
-// Assign admin/promoter role.
-
-function isAdmin(address account) public view returns (bool)
-// Check if address has admin privileges.
+// Withdraw contract balance to admin wallet (Admin only)
+function withdraw() public onlyAdmin;
 ```
 
 ### Events
 
 ```solidity
-event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
-// Emitted on every ticket transfer (including mint).
-
-event TicketUsed(uint256 indexed tokenId, uint256 timestamp);
-// Emitted when a ticket is validated at the gate.
-
-event AdminRoleGranted(address indexed account);
-// Emitted when an admin role is assigned.
-
-event TicketMinted(address indexed buyer, uint256 quantity, uint256 totalPrice);
-// Emitted on each successful mint transaction.
+event TicketPurchased(uint256 indexed ticketId, address indexed buyer, uint256 pricePaid);
+event TicketTransferred(uint256 indexed ticketId, address indexed from, address indexed to);
+event TicketValidated(uint256 indexed ticketId, address indexed validatedBy);
+event FundsWithdrawn(address indexed to, uint256 amount);
 ```
 
 ---
@@ -290,14 +248,12 @@ event TicketMinted(address indexed buyer, uint256 quantity, uint256 totalPrice);
 ### Installation
 
 **1. Clone the repository**
-
 ```bash
 git clone https://github.com/wirayudhabn/arctic-monkeys-tickets.git
 cd arctic-monkeys-tickets
 ```
 
 **2. Start a local server** — pick whichever works for your setup:
-
 ```bash
 # Python (recommended)
 python -m http.server 8000
@@ -305,17 +261,14 @@ python -m http.server 8000
 # Node.js
 npx http-server -p 8000 -c-1
 ```
-
 Or use the **Live Server** extension in VS Code (right-click `index.html` → *Open with Live Server*).
 
 **3. Open the app**
-
 ```
 http://localhost:8000
 ```
 
 **4. Configure MetaMask**
-
 - Switch network to **Sepolia Testnet**
 - Ensure your account has Sepolia ETH (check via MetaMask or [Etherscan](https://sepolia.etherscan.io))
 
@@ -326,17 +279,14 @@ http://localhost:8000
 Once the app is running and MetaMask is connected:
 
 **As an Attendee:**
-
 1. Click **Connect Wallet** and approve the MetaMask request
-2. Select the **Penonton (Attendee)** role
-3. Click **Mint Tickets**, enter quantity (1–5), and confirm the transaction
-4. Transfer a ticket by entering the recipient address and token ID
+2. Click **BUY TICKET — 0.01 ETH** to purchase 1 ticket (maximum 1 per wallet limit)
+3. Transfer your ticket to a friend by entering the receiver's MetaMask wallet address and your Ticket ID, then click **TRANSFER TICKET**
 
 **As a Promotor/Admin:**
-
-1. Connect a wallet that has been granted admin role via `setAdminRole`
-2. Select the **Promotor (Admin)** role — the Validation Dashboard unlocks
-3. Enter a token ID and click **Mark as Used** to validate a ticket at the gate
+1. Connect the wallet address that deployed the contract (`admin` address)
+2. The dApp automatically unlocks the **Gatekeeper Verification Dashboard** (disabling the lock overlay)
+3. Enter the attendee's Ticket ID and click **VALIDATE TICKET & OPEN GATE** to validate and burn/use the ticket
 
 ### Troubleshooting
 
@@ -345,8 +295,8 @@ Once the app is running and MetaMask is connected:
 | `Cannot GET /` | Local server not running | Verify server is running on the correct port |
 | MetaMask not detected | Extension disabled or not installed | Enable MetaMask in browser extensions, then refresh |
 | `RPC Error` | Wrong network selected | Switch MetaMask to Sepolia Testnet |
-| Transaction failed | Insufficient Sepolia ETH | Get test ETH from the [faucet](https://sepolia-faucet.pk910.de/) |
-| No contract response | Incorrect contract address in code | Verify address matches `0x6C339FF...` in `app.js` |
+| Transaction failed | Insufficient Sepolia ETH or requirement violation (e.g. already owned a ticket) | Get test ETH from faucet / check transaction rules |
+| No contract response | Incorrect contract address in code | Verify address matches `0xc17a578de92486982E33BE15e215E4aa9c8Ab177` in `app.js` |
 | Gas limit exceeded | Gas estimation error | Manually increase gas limit in MetaMask |
 
 ---
@@ -354,35 +304,19 @@ Once the app is running and MetaMask is connected:
 ## Project Structure
 
 ```
-am-tickets/
-├── index.html          # Main application entry point
-├── app.js              # Web3 logic — MetaMask, Ethers.js, contract calls
-├── abi.json            # Compiled contract ABI
-├── style.css           # Custom styles (Tailwind augmentation)
-└── README.md
+smart-contract-tiket/
+├── Contract Solidity/
+│   └── TicketBlock.sol # Solidity smart contract code
+├── index.html          # Main application UI entry point
+├── app.js              # Web3 frontend logic (MetaMask, Ethers.js, contract interactions)
+└── README.md           # Documentation
 ```
-
-> The smart contract source lives at `contracts/AMTickets.sol` in the repository and was deployed via Remix IDE. Verified source is readable on [Etherscan](https://sepolia.etherscan.io/address/0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5#code).
-
----
-
-## Contributing
-
-Contributions, issues, and feature requests are welcome.
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/your-feature`
-3. Commit your changes: `git commit -m "feat: add your feature"`
-4. Push to the branch: `git push origin feat/your-feature`
-5. Open a Pull Request
-
-Please follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages.
 
 ---
 
 ## License
 
-Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
+Distributed under the **MIT License**. See `LICENSE` for details.
 
 ---
 
