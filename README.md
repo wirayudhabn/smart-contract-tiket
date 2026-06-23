@@ -1,488 +1,395 @@
-# AM-TICKETS: ON-CHAIN AUDIT SYSTEM
-
-## 🎫 Sistem Penjualan Tiket Berbasis Blockchain dengan Validasi Keamanan Terdistribusi
-
 <div align="center">
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
-![Repository Size](https://img.shields.io/badge/repo%20size-minimal-inactive?style=flat-square)
-![Solidity](https://img.shields.io/badge/solidity-v0.8.0+-red?style=flat-square)
-![Web3](https://img.shields.io/badge/web3-ethers.js_v6-purple?style=flat-square)
-![Network](https://img.shields.io/badge/network-sepolia_testnet-orange?style=flat-square)
+# AM-TICKETS
 
-**Solusi blockchain untuk mencegah pemalsuan tiket dan calo digital melalui mekanisme on-chain verification yang transparan, terdesentralisasi, dan immutable.**
+**Decentralized Concert Ticketing on Ethereum**
 
-[📖 Dokumentasi](#-dokumentasi) • [🏗️ Arsitektur](#-arsitektur--teknologi) • [📦 Smart Contract](#-informasi-smart-contract) • [🚀 Mulai](#-panduan-instalasi-lokal)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/wirayudhabn/arctic-monkeys-tickets)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](./LICENSE)
+[![Solidity](https://img.shields.io/badge/Solidity-v0.8.0+-363636?style=flat-square&logo=solidity)](https://docs.soliditylang.org)
+[![Ethers.js](https://img.shields.io/badge/Ethers.js-v6-8A2BE2?style=flat-square)](https://docs.ethers.org/v6/)
+[![Network](https://img.shields.io/badge/Network-Sepolia_Testnet-F6851B?style=flat-square&logo=ethereum)](https://sepolia.etherscan.io)
+[![OpenZeppelin](https://img.shields.io/badge/OpenZeppelin-ERC--721-4E5EE4?style=flat-square)](https://docs.openzeppelin.com/contracts/4.x/erc721)
+
+A blockchain-based ticketing dApp built on Ethereum Sepolia Testnet to prevent ticket fraud, scalping, and double-spending through on-chain verification, immutable audit trails, and role-based access control.
+
+[Live Demo](https://am-tickets.vercel.app) · [Smart Contract](https://sepolia.etherscan.io/address/0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5) · [Report a Bug](https://github.com/wirayudhabn/arctic-monkeys-tickets/issues) · [Discussions](https://github.com/wirayudhabn/arctic-monkeys-tickets/discussions)
 
 </div>
 
 ---
 
-## 📋 Daftar Isi
+## Table of Contents
 
-- [Tentang Proyek](#-tentang-proyek)
-- [Masalah & Solusi](#-masalah--solusi)
-- [Fitur Utama](#-fitur-utama)
-- [Fitur Keamanan Data](#-fitur-keamanan-data)
-- [Arsitektur & Teknologi](#-arsitektur--teknologi)
-- [Informasi Smart Contract](#-informasi-smart-contract)
-- [Panduan Instalasi Lokal](#-panduan-instalasi-lokal)
-- [Dokumentasi](#-dokumentasi)
-
----
-
-## 🎯 Tentang Proyek
-
-**AM-TICKETS** adalah aplikasi desentralisasi (dApp) yang mensimulasikan sistem penjualan tiket konser **Arctic Monkeys World Tour 2026** berbasis teknologi blockchain Ethereum. Proyek ini dibangun sebagai **Tugas Akhir (UAS)** untuk mata kuliah **Keamanan Data dan Informasi** di bawah bimbingan **Pak Made Adi**.
-
-Aplikasi ini mendemonstrasikan implementasi praktis konsep-konsep keamanan data modern dalam konteks Web3, termasuk:
-
-- ✅ Smart Contract Security & State Management
-- ✅ Role-Based Access Control (RBAC)
-- ✅ Double-Spending Prevention
-- ✅ Immutable Audit Trail
-- ✅ Cryptographic Verification
+- [Overview](#overview)
+- [Problem Statement](#problem-statement)
+- [Features](#features)
+- [Security Architecture](#security-architecture)
+- [Tech Stack](#tech-stack)
+- [Smart Contract](#smart-contract)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 🚨 Masalah & Solusi
+## Overview
 
-Industri tiket digital menghadapi berbagai tantangan keamanan yang dapat diselesaikan melalui blockchain:
+**AM-TICKETS** is a decentralized application (dApp) simulating a concert ticketing system for the *Arctic Monkeys World Tour 2026*. It demonstrates real-world application of data security principles in a Web3 context — treating ticket ownership as a non-fungible on-chain asset managed through Ethereum smart contracts.
 
-| Masalah                       | Dampak                                | Solusi AM-TICKETS                                                        |
-| ----------------------------- | ------------------------------------- | ------------------------------------------------------------------------ |
-| 🎟️ **Calo & Scalping**        | Harga tiket melonjak 3-5x lipat       | Pembatasan ketat: max 5 tiket/wallet, tracked on-chain                   |
-| 🔄 **Pemalsuan Tiket**        | Tiket ganda/palsu beredar             | Blockchain sebagai single source of truth; setiap token unik & terdaftar |
-| 👻 **Double-Spending**        | Satu tiket digunakan berkali-kali     | Atomic state transfer; pemilik lama otomatis kehilangan akses            |
-| 🔐 **Sistem Terpusat Rentan** | Database mudah dimanipulasi           | Desentralisasi penuh; tidak ada single point of failure                  |
-| 👤 **Validasi Tanpa Batas**   | Siapa saja bisa mengklaim tiket valid | RBAC ketat: hanya admin yang authorized untuk validasi                   |
+Built as a final project (UAS) for **Keamanan Data dan Informasi** at Universitas Primakara, under the supervision of Pak Made Adi.
 
----
+**Core guarantees:**
 
-## ⭐ Fitur Utama
-
-### 1️⃣ **Akuisisi Tiket (Minting)**
-
-Pembelian tiket on-chain dengan mekanisme keamanan berlapis:
-
-- 💰 Harga tetap: **0.01 Sepolia ETH** per tiket
-- 🔒 Pembatasan per wallet: **maximum 5 tiket** (anti-scalping)
-- ✓ Validasi saldo & allowance sebelum transaksi
-- 📜 Setiap minting tercatat di blockchain sebagai NFT unik
-
-### 2️⃣ **Sirkulasi Tiket (Transfer Ownership)**
-
-Transfer hak milik dengan jaminan keamanan double-spending prevention:
-
-- 🔐 Atomic transfer: pemilik lama otomatis kehilangan akses
-- ⛓️ Transfer ownership tracked di on-chain events
-- 🚫 Prevent tiket "used" untuk ditransfer kembali
-- 📊 Historical tracking: siapa pemilik di waktu kapan?
-
-### 3️⃣ **Konsumsi Tiket (Gatekeeper Validation)**
-
-Validasi tiket dengan implementasi Role-Based Access Control (RBAC):
-
-- 🔑 Hanya **admin/promotor authorized** dapat mark tiket sebagai "used"
-- 🔐 UI/UX diblokir (blur & gembok) untuk penonton biasa
-- ✅ Validasi real-time sebelum checkpoint masuk
-- 📝 Audit trail: timestamp & admin identity tercatat di blockchain
+- Every ticket is a unique ERC-721 NFT — no duplicates, no counterfeits
+- All ownership changes are atomic and permanently logged on-chain
+- Validation is gated by on-chain role-based access control, not application logic
+- No central database — Ethereum is the single source of truth
 
 ---
 
-## 🔐 Fitur Keamanan Data
+## Problem Statement
 
-Proyek ini mengimplementasikan **5 pilar utama keamanan data** sesuai standar industri:
+The digital ticketing industry faces systemic security vulnerabilities that centralized systems cannot reliably solve:
 
-### A. **Access Control & Authentication**
+| Problem | Real-World Impact | AM-TICKETS Solution |
+|---|---|---|
+| **Scalping** | Resale prices 3–5× face value | Max 5 tickets per wallet, enforced on-chain |
+| **Counterfeit tickets** | Fake tickets indistinguishable from real | Every ticket is a unique NFT on a public ledger |
+| **Double-spending** | One ticket redeemed multiple times | Atomic state transfer; used tickets cannot be re-transferred |
+| **Centralized failure** | Single database = single attack surface | No central server; data lives across Ethereum's validator network |
+| **Unauthorized validation** | Anyone can claim to be a gate staff | RBAC enforced at contract level via `onlyAdmin` modifier |
 
-```
-✓ Metamask Wallet Authentication
-  → Digital signature verification (tidak ada private key di frontend)
-  → Setiap address adalah unique identifier & cryptographic proof
+---
 
-✓ Role-Based Access Control (RBAC) di Smart Contract
-  → Mapping: address → role (Admin/Attendee)
-  → Modifier "onlyAdmin" enforce di contract level
-  → Frontend UI mencegah akses untuk role yang tidak berwenang
-```
+## Features
 
-### B. **Data Integrity & Immutability**
+### 🎟 Ticket Minting
 
-```
-✓ Blockchain Ledger (Single Source of Truth)
-  → Tiket = NFT dengan metadata immutable (ERC-721 standard)
-  → Hash kriptografi (keccak256) prevent modifikasi data historis
-  → Consensus mechanism Ethereum menjamin data agreement
+- Fixed price: **0.01 Sepolia ETH** per ticket
+- Hard cap: **5 tickets per wallet** (anti-scalping)
+- Each ticket minted as a unique ERC-721 NFT
+- Balance and allowance validation before transaction submission
 
-✓ State Verification
-  → Smart contract verify state sebelum state transition
-  → Invalid operations diblokir di contract level (revert)
-```
+### 🔄 Ticket Transfer
 
-### C. **Confidentiality & Secure Communication**
+- Atomic ownership transfer — previous owner loses access immediately
+- Transfer blocked for tickets already marked as used
+- Full ownership history available via on-chain event logs
 
-```
-✓ Encrypted Wallet Connection
-  → Metamask handle key management (private key never exposed)
-  → Semua komunikasi via signed messages
+### ✅ Gate Validation (Admin Only)
 
-✓ Sepolia Testnet Isolation
-  → Testing environment terpisah dari mainnet
-  → Sandbox protection: risk mitigation untuk production
-```
+- `markTicketAsUsed` callable only by addresses with admin role
+- Validation UI is blocked (blur + disabled) for non-admin wallets
+- Every validation timestamped and logged as an immutable on-chain event
 
-### D. **Availability & Resilience**
+### 🔐 Role Management (Owner Only)
 
-```
-✓ Decentralized Infrastructure
-  → Ribuan validator di Ethereum Sepolia
-  → Smart contract berjalan pada setiap node secara independent
-  → Tidak ada downtime, tidak ada single point of failure
-```
+- Contract deployer (owner) assigns admin roles via `setAdminRole`
+- Admin roles verifiable publicly via `isAdmin` query
+- All role grants emit `AdminRoleGranted` events for auditability
 
-### E. **Audit & Non-Repudiation**
+---
+
+## Security Architecture
+
+AM-TICKETS implements five security pillars aligned with industry standards:
+
+### A. Access Control & Authentication
 
 ```
-✓ On-Chain Audit Trail
-  → Event logs: Transfer(from, to, tokenId), TicketUsed(tokenId)
-  → Semua transaksi immutable & cryptographically signed
-  → Deny-ability prevention: proof ada di blockchain selamanya
+MetaMask Wallet Authentication
+→ Identity = cryptographic address; no username/password attack surface
+→ Private keys never touch the frontend
+
+Role-Based Access Control (RBAC) — enforced on-chain
+→ mapping(address => bool) admins
+→ onlyAdmin modifier blocks unauthorized calls at the EVM level
+→ Frontend UI reinforces this; contract enforces it
+```
+
+### B. Data Integrity & Immutability
+
+```
+Blockchain as Immutable Ledger
+→ Ticket state stored in contract; no mutable off-chain database
+→ keccak256 hashing prevents historical data tampering
+→ Ethereum PoS consensus ensures data agreement across nodes
+
+State Verification
+→ All state transitions validated by contract before execution
+→ Invalid operations revert — no partial writes
+```
+
+### C. Confidentiality & Secure Communication
+
+```
+MetaMask Key Management
+→ Private keys are never exposed to the dApp
+→ All interactions are signed messages approved by the user
+
+Sepolia Testnet Isolation
+→ Development runs on an isolated testnet
+→ Zero financial risk during testing
+```
+
+### D. Availability & Resilience
+
+```
+Decentralized Infrastructure
+→ Thousands of Ethereum validators run the contract independently
+→ No single point of failure; no scheduled downtime
+→ Smart contract state persists indefinitely
+```
+
+### E. Audit Trail & Non-Repudiation
+
+```
+On-Chain Event Logs
+→ Transfer(from, to, tokenId) — every ownership change
+→ TicketUsed(tokenId, timestamp) — every validation
+→ AdminRoleGranted(account) — every role assignment
+→ TicketMinted(buyer, quantity, totalPrice) — every purchase
+
+All events are immutable, cryptographically signed, and publicly verifiable
 ```
 
 ---
 
-## 🏗️ Arsitektur & Teknologi
+## Tech Stack
 
-### Diagram Arsitektur Sistem
+| Layer | Technology | Version | Purpose |
+|---|---|---|---|
+| Blockchain | Ethereum Sepolia | Testnet | Public ledger & PoS consensus |
+| Smart Contract | Solidity | v0.8.0+ | ERC-721 NFT logic & RBAC |
+| Web3 Integration | Ethers.js | v6 | Contract interaction & ABI encoding |
+| Wallet | MetaMask | Latest | Authentication & transaction signing |
+| Frontend | HTML5 + Vanilla JS | ES6+ | UI structure & logic |
+| Styling | Tailwind CSS | v3 (CDN) | Responsive utility-first design |
+| Hosting | Vercel | — | Serverless frontend deployment |
+| Contract IDE | Remix IDE | — | Contract development & deployment |
+
+### System Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                    USER INTERFACE                            │
-│         (HTML5 + Vanilla JS + Tailwind CSS)                  │
-├──────────────────────────────────────────────────────────────┤
-│  Minting UI  │  Transfer UI  │  Validation Dashboard         │
-│  Wallet Conn │  History      │  Admin Panel                  │
-└────────────────────┬─────────────────────────────────────────┘
-                     │
-    ┌────────────────┼────────────────┐
-    │                │                │
- [Ethers.js v6]  [Contract ABI]  [Metamask Plugin]
- • Contract Call  • JSON Format    • Sign Transaction
- • Event Listener • Type Safe      • Key Management
- • State Query    • Error Handling • RPC Endpoint
-    │                │                │
-    └────────────────┼────────────────┘
-                     │
-    ┌────────────────▼────────────────┐
-    │   SMART CONTRACT LAYER          │
-    │  (Solidity - Sepolia Testnet)   │
-    ├────────────────────────────────┤
-    │ ✓ Minting Logic                │
-    │ ✓ Transfer Logic               │
-    │ ✓ RBAC Enforcement             │
-    │ ✓ State Management             │
-    │ ✓ Event Emission               │
-    └────────────────────────────────┘
-                     │
-    ┌────────────────▼────────────────┐
-    │  BLOCKCHAIN LAYER              │
-    │  (Ethereum Sepolia Testnet)    │
-    ├────────────────────────────────┤
-    │ • Consensus (Proof-of-Stake)   │
-    │ • Validator Network            │
-    │ • Immutable Ledger             │
-    │ • State Root Hashing           │
-    └────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│               USER INTERFACE                │
+│     HTML5 · Vanilla JS · Tailwind CSS       │
+│                                             │
+│  [ Mint ]  [ Transfer ]  [ Validate ]       │
+│  [ Wallet Connect ]  [ Admin Panel ]        │
+└──────────────────┬──────────────────────────┘
+                   │
+       ┌───────────┼───────────┐
+       │           │           │
+  Ethers.js   Contract ABI  MetaMask
+  · Calls      · JSON        · Signs txn
+  · Events     · Types       · RPC endpoint
+  · Queries    · Errors      · Key mgmt
+       │           │           │
+       └───────────┼───────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│           SMART CONTRACT LAYER              │
+│        Solidity · Sepolia Testnet           │
+│                                             │
+│  · Minting logic       · RBAC enforcement  │
+│  · Transfer logic      · State management  │
+│  · Event emission      · Access modifiers  │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│           BLOCKCHAIN LAYER                  │
+│        Ethereum Sepolia Testnet             │
+│                                             │
+│  · Proof-of-Stake consensus                │
+│  · Validator network                        │
+│  · Immutable state + event ledger           │
+└─────────────────────────────────────────────┘
 ```
-
-### Tech Stack Detail
-
-| Layer                   | Teknologi          | Versi    | Fungsi                               |
-| ----------------------- | ------------------ | -------- | ------------------------------------ |
-| **Blockchain**          | Ethereum Sepolia   | Testnet  | Public ledger & consensus            |
-| **Smart Contract**      | Solidity           | v0.8.0+  | ERC-721 NFT logic & RBAC             |
-| **Frontend**            | HTML5              | Latest   | Semantic markup & structure          |
-| **Frontend**            | Vanilla JavaScript | ES6+     | DOM manipulation & logic             |
-| **Styling**             | Tailwind CSS       | v3 (CDN) | Responsive & utility-first design    |
-| **Web3 Integration**    | Ethers.js          | v6       | Contract interaction & ABI encoding  |
-| **Wallet**              | Metamask           | Latest   | Authentication & transaction signing |
-| **Frontend Deployment** | Vercel             | -        | Serverless hosting & auto-deploy     |
-| **Contract Deployment** | Remix IDE          | -        | Development & deployment environment |
 
 ---
 
-## 📦 Informasi Smart Contract
+## Smart Contract
 
-### Detail Deployment
+### Deployment Details
 
-```
-┌─────────────────────────────────────────────────────┐
-│           SMART CONTRACT DEPLOYMENT INFO            │
-├─────────────────────────────────────────────────────┤
-│ Network:       Ethereum Sepolia Testnet             │
-│ Contract Type: ERC-721 (Non-Fungible Token/NFT)     │
-│ Status:        Active & Verified                    │
-│ Standard:      OpenZeppelin Interface               │
-└─────────────────────────────────────────────────────┘
+| Field | Value |
+|---|---|
+| **Network** | Ethereum Sepolia Testnet |
+| **Standard** | ERC-721 (OpenZeppelin) |
+| **Contract Address** | `0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5` |
+| **Status** | Active & Verified |
 
-Contract Address:
-  0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5
-```
+🔍 **[View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5)** — source code, transactions, read/write interface
 
-### Verifikasi & Interaksi di Blockchain Explorer
-
-Untuk melihat kode, transaksi, dan state contract:
-
-🔍 **Sepolia Etherscan**: [Lihat di Block Explorer](https://sepolia.etherscan.io/address/0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5)
-
-Fitur yang tersedia di Etherscan:
-
-- 📊 Daftar semua transaksi (Transfer, Minting events)
-- 📝 Source code verification (transparent & auditable)
-- 💬 Read/Write Contract untuk direct interaction
-- 📈 Analytics: total tiket terjual, unique holders, dll
-
-### Core Functions
+### ABI Reference
 
 ```solidity
-// MINTING & OWNERSHIP
+// ─── MINTING ────────────────────────────────────────────
 function mint(uint256 quantity) public payable
-  → Beli tiket (0.01 ETH each, max 5/wallet)
+// Buy tickets. 0.01 ETH each. Max 5 per wallet.
 
+// ─── OWNERSHIP ──────────────────────────────────────────
 function transferTicket(address to, uint256 tokenId) public
-  → Transfer ownership (atomic, prevents double-spending)
+// Transfer ownership atomically. Blocks used tickets.
 
 function ownerOf(uint256 tokenId) public view returns (address)
-  → Query pemilik tiket saat ini
+// Query current ticket owner.
 
-// VALIDATION & RBAC
-function markTicketAsUsed(uint256 tokenId) public onlyAdmin
-  → Mark tiket sebagai "used" (Admin only)
-
-function isTicketUsed(uint256 tokenId) public view returns (bool)
-  → Query apakah tiket sudah divalidasi
-
-// ADMIN FUNCTIONS
-function setAdminRole(address account) public onlyOwner
-  → Assign admin/promotor role (Owner only)
-
-function isAdmin(address account) public view returns (bool)
-  → Check apakah address memiliki admin role
-
-// QUERY FUNCTIONS
 function balanceOf(address owner) public view returns (uint256)
-  → Jumlah tiket yang dimiliki address
+// Query how many tickets an address holds.
 
 function totalSupply() public view returns (uint256)
-  → Total tiket yang pernah dimint
+// Total tickets minted.
+
+// ─── VALIDATION (Admin only) ─────────────────────────────
+function markTicketAsUsed(uint256 tokenId) public onlyAdmin
+// Mark ticket as redeemed at the gate.
+
+function isTicketUsed(uint256 tokenId) public view returns (bool)
+// Check if ticket has been validated.
+
+// ─── ACCESS CONTROL (Owner only) ────────────────────────
+function setAdminRole(address account) public onlyOwner
+// Assign admin/promoter role.
+
+function isAdmin(address account) public view returns (bool)
+// Check if address has admin privileges.
 ```
 
-### Event Log (Audit Trail)
-
-Semua events terekam immutable di blockchain:
+### Events
 
 ```solidity
-event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
-  → Tercatat setiap transfer tiket
+event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+// Emitted on every ticket transfer (including mint).
 
-event TicketUsed(uint256 indexed tokenId, uint256 timestamp)
-  → Tercatat setiap validasi tiket + timestamp
+event TicketUsed(uint256 indexed tokenId, uint256 timestamp);
+// Emitted when a ticket is validated at the gate.
 
-event AdminRoleGranted(address indexed account)
-  → Tercatat setiap admin assignment
+event AdminRoleGranted(address indexed account);
+// Emitted when an admin role is assigned.
 
-event TicketMinted(address indexed buyer, uint256 quantity, uint256 totalPrice)
-  → Tercatat setiap minting transaction
+event TicketMinted(address indexed buyer, uint256 quantity, uint256 totalPrice);
+// Emitted on each successful mint transaction.
 ```
 
 ---
 
-## 🚀 Panduan Instalasi Lokal
+## Getting Started
 
-### Prasyarat
+### Prerequisites
 
-Sebelum memulai, pastikan Anda memiliki:
+- A modern browser with the [MetaMask](https://metamask.io) extension installed
+- MetaMask connected to **Sepolia Testnet**
+- Sepolia ETH test tokens — get free tokens from the [Sepolia Faucet](https://sepolia-faucet.pk910.de/)
+- A local web server (Python, Node.js, or VS Code Live Server)
 
-- ✅ **Browser modern** dengan Metamask extension (Chrome, Firefox, Brave, Edge)
-- ✅ **Metamask** terinstall & terhubung ke Sepolia Testnet
-- ✅ **Sepolia ETH test token** (dapatkan gratis dari [Faucet](https://sepolia-faucet.pk910.de/))
-- ✅ **Live Server** (pilih salah satu):
-  - Python 3.x built-in module
-  - Node.js dengan `http-server`
-  - VS Code Live Server extension
+### Installation
 
-### Step 1: Clone Repository
+**1. Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/am-tickets.git
-cd am-tickets
+git clone https://github.com/wirayudhabn/arctic-monkeys-tickets.git
+cd arctic-monkeys-tickets
 ```
 
-### Step 2: Jalankan Local Web Server
-
-Pilih **satu metode** yang paling sesuai dengan setup Anda:
-
-#### **Metode A: Python (Recommended)**
+**2. Start a local server** — pick whichever works for your setup:
 
 ```bash
-# Untuk Python 3.x
+# Python (recommended)
 python -m http.server 8000
 
-# Atau untuk Python 2.x (legacy)
-python -m SimpleHTTPServer 8000
+# Node.js
+npx http-server -p 8000 -c-1
 ```
 
-**Output:**
+Or use the **Live Server** extension in VS Code (right-click `index.html` → *Open with Live Server*).
 
-```
-Serving HTTP on 0.0.0.0 port 8000 (http://localhost:8000/) ...
-```
-
-#### **Metode B: Node.js (http-server)**
-
-```bash
-# Install global jika belum
-npm install -g http-server
-
-# Jalankan di project root
-http-server -p 8000 -c-1
-```
-
-**Output:**
-
-```
-Starting up http-server, serving .
-Available on:
-  http://localhost:8000
-```
-
-#### **Metode C: VS Code Live Server Extension**
-
-```
-1. Install extension "Live Server" (Five Server)
-2. Klik kanan file index.html
-3. Pilih "Open with Live Server"
-4. Browser otomatis buka http://localhost:5500
-```
-
-### Step 3: Konfigurasi Metamask
-
-1. 🦊 Buka extension Metamask di browser
-2. 🔗 Pastikan **Network: Sepolia Testnet** dipilih
-3. ⛽ Verifikasi akun Anda memiliki **Sepolia ETH** test token
-   - Jika tidak ada, dapatkan dari [Sepolia Faucet](https://sepolia-faucet.pk910.de/)
-4. 🔄 Refresh halaman aplikasi
-
-### Step 4: Akses Aplikasi
-
-Buka browser dan navigasi ke:
+**3. Open the app**
 
 ```
 http://localhost:8000
 ```
 
-atau sesuai port yang ditampilkan di terminal.
+**4. Configure MetaMask**
 
-### Step 5: Mulai Menggunakan
-
-```
-✓ Klik tombol "Connect Wallet"
-✓ Pilih akun Metamask yang ingin gunakan
-✓ Approve connection request
-✓ Pilih role: Penonton (Attendee) atau Promotor (Admin)
-✓ Beli tiket, transfer, atau validasi sesuai fitur
-```
+- Switch network to **Sepolia Testnet**
+- Ensure your account has Sepolia ETH (check via MetaMask or [Etherscan](https://sepolia.etherscan.io))
 
 ---
+
+## Usage
+
+Once the app is running and MetaMask is connected:
+
+**As an Attendee:**
+
+1. Click **Connect Wallet** and approve the MetaMask request
+2. Select the **Penonton (Attendee)** role
+3. Click **Mint Tickets**, enter quantity (1–5), and confirm the transaction
+4. Transfer a ticket by entering the recipient address and token ID
+
+**As a Promotor/Admin:**
+
+1. Connect a wallet that has been granted admin role via `setAdminRole`
+2. Select the **Promotor (Admin)** role — the Validation Dashboard unlocks
+3. Enter a token ID and click **Mark as Used** to validate a ticket at the gate
 
 ### Troubleshooting
 
-| Masalah                           | Penyebab                      | Solusi                                           |
-| --------------------------------- | ----------------------------- | ------------------------------------------------ |
-| ❌ **"Cannot GET /"**             | Live server tidak berjalan    | Pastikan port tepat & running di project root    |
-| ❌ **Metamask tidak terdeteksi**  | Extension tidak enabled       | Refresh browser, enable extension di toolbar     |
-| ❌ **"RPC Error"**                | Metamask tidak ke Sepolia     | Ganti network ke Sepolia Testnet di Metamask     |
-| ❌ **Transaksi failed**           | Saldo Sepolia ETH tidak cukup | Dapatkan test ETH dari faucet                    |
-| ❌ **Smart contract no response** | Contract address salah        | Verifikasi address di kode, check Etherscan      |
-| ⚠️ **Gas limit exceeded**         | Gas estimation terlalu tinggi | Increase gas limit di Metamask atau cek contract |
+| Error | Cause | Fix |
+|---|---|---|
+| `Cannot GET /` | Local server not running | Verify server is running on the correct port |
+| MetaMask not detected | Extension disabled or not installed | Enable MetaMask in browser extensions, then refresh |
+| `RPC Error` | Wrong network selected | Switch MetaMask to Sepolia Testnet |
+| Transaction failed | Insufficient Sepolia ETH | Get test ETH from the [faucet](https://sepolia-faucet.pk910.de/) |
+| No contract response | Incorrect contract address in code | Verify address matches `0x6C339FF...` in `app.js` |
+| Gas limit exceeded | Gas estimation error | Manually increase gas limit in MetaMask |
 
 ---
 
-## 📖 Dokumentasi
+## Project Structure
 
-### Konsep Keamanan Implementasi
-
-**1. Anti-Scalping Mechanism:**
-
-```javascript
-// Smart Contract enforces:
-require(balanceOf(msg.sender) + quantity <= MAX_TICKETS_PER_WALLET);
-// Calo harus buat multiple wallets (biaya gas tinggi = tidak profitable)
+```
+am-tickets/
+├── index.html          # Main application entry point
+├── app.js              # Web3 logic — MetaMask, Ethers.js, contract calls
+├── abi.json            # Compiled contract ABI
+├── style.css           # Custom styles (Tailwind augmentation)
+└── README.md
 ```
 
-**2. Double-Spending Prevention:**
-
-```javascript
-// Atomic state transfer:
-function transferTicket(address to, uint256 tokenId) {
-    require(msg.sender == ownerOf(tokenId));
-    require(!isTicketUsed[tokenId]);
-    // Transfer ownership (pemilik lama kehilangan akses)
-    _transfer(msg.sender, to, tokenId);
-}
-```
-
-**3. Role-Based Access Control:**
-
-```javascript
-// Only admin can validate:
-function markTicketAsUsed(uint256 tokenId) public onlyAdmin {
-    require(admins[msg.sender], "Not authorized");
-    isTicketUsed[tokenId] = true;
-}
-
-// Frontend blocking:
-if (userRole !== "admin") {
-    validationUI.classList.add("blur-md", "pointer-events-none");
-}
-```
-
-### Resources
-
-- 📘 [Ethereum Docs](https://ethereum.org/developers)
-- 📗 [Solidity Documentation](https://docs.soliditylang.org)
-- 📙 [OpenZeppelin ERC-721](https://docs.openzeppelin.com/contracts/4.x/erc721)
-- 📕 [Ethers.js v6 Guide](https://docs.ethers.org/v6/)
-- 🔐 [Smart Contract Security Best Practices](https://consensys.net/smart-contract-best-practices/)
+> The smart contract source lives at `contracts/AMTickets.sol` in the repository and was deployed via Remix IDE. Verified source is readable on [Etherscan](https://sepolia.etherscan.io/address/0x6C339FfEcbc9C011bB8d08796FE7Fd146812D9B5#code).
 
 ---
 
-## 📄 Lisensi
+## Contributing
 
-Proyek ini dilisensikan di bawah **MIT License**. Anda bebas menggunakan, memodifikasi, dan mendistribusikan dengan persyaratan sederhana. Lihat file `LICENSE` untuk detail lengkap.
+Contributions, issues, and feature requests are welcome.
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Commit your changes: `git commit -m "feat: add your feature"`
+4. Push to the branch: `git push origin feat/your-feature`
+5. Open a Pull Request
+
+Please follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages.
 
 ---
 
-## 💬 Dukungan
+## License
 
-Untuk pertanyaan, issue, atau saran:
-
-- 📧 **Email**: [2401020059@primakara.ac.id]
-- 🐛 **Report Bug**: [GitHub Issues](https://github.com/wirayudhabn/arctic-monkeys-tickets/issues)
-- 💡 **Diskusi**: [GitHub Discussions](https://github.com/wirayudhabn/arctic-monkeys-tickets/discussions)
+Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 
 ---
 
 <div align="center">
 
-### Dibuat dengan 🔐 Keamanan Data & 💙 Blockchain Technology
+Built with 🔐 by [Wirayudha BN](mailto:2401020059@primakara.ac.id)
 
-**AM-TICKETS | Sistem Tiket On-Chain Aman untuk Arctic Monkeys World Tour 2026**
-
-Proyek Akhir (UAS) - Keamanan Data dan Informasi | Bimbingan: Pak Made Adi
-
-[⬆ Kembali ke Atas](#am-tickets-on-chain-audit-system)
+UAS · Keamanan Data dan Informasi · Universitas Primakara · 2026
 
 </div>

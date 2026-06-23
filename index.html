@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AM-Tickets // On-Chain Audit System</title>
     <meta
       name="description"
-      content="Sistem tiket konser Arctic Monkeys berbasis blockchain di Sepolia Testnet. Beli, transfer, dan validasi tiket Anda secara on-chain."
+      content="Blockchain-based Arctic Monkeys concert ticketing system on Sepolia Testnet. Buy, transfer, and validate your tickets on-chain."
     />
 
     <!-- Favicon Logo : AM -->
@@ -489,7 +489,7 @@
     <!-- ════════════════════════════════════════════════════════════════
        TOAST CONTAINER
   ════════════════════════════════════════════════════════════════ -->
-    <div id="toast-container" aria-live="polite" aria-label="Notifikasi"></div>
+    <div id="toast-container" aria-live="polite" aria-label="Notifications"></div>
 
     <!-- ════════════════════════════════════════════════════════════════
        HEADER / NAVBAR
@@ -558,7 +558,7 @@
               <span
                 id="role-badge"
                 class="role-badge fan hidden md:inline-block"
-                >ROLE: FAN / PENONTON</span
+                >ROLE: FAN / SPECTATOR</span
               >
             </div>
 
@@ -580,7 +580,7 @@
             <button
               id="btn-connect-wallet"
               class="btn-primary px-2.5 sm:px-4 py-1.5 sm:py-2 rounded text-[10px] sm:text-xs flex items-center gap-1.5 sm:gap-2 flex-shrink-0 whitespace-nowrap"
-              aria-label="Hubungkan MetaMask wallet"
+              aria-label="Connect MetaMask wallet"
             >
               <svg
                 width="12"
@@ -647,7 +647,7 @@
       >
         <div class="max-w-2xl">
           <div class="phase-badge text-silver mb-3 sm:mb-4">
-            ◆ Keamanan Data &amp; Informasi · UAS 2026
+            ◆ Data &amp; Information Security · UAS 2026
           </div>
           <!--
           Skala font hero:
@@ -664,10 +664,9 @@
             >
           </h2>
           <p class="text-silver/70 text-xs sm:text-sm leading-relaxed max-w-lg">
-            Sistem tiket berbasis blockchain pertama di atas Sepolia Testnet.
-            Setiap tiket adalah NFT yang tidak dapat dipalsukan, dijamin
-            keasliannya melalui on-chain audit trail yang transparan dan
-            immutable.
+            The first blockchain-based ticketing system on Sepolia Testnet.
+            Each ticket is a non-forgeable NFT, with guaranteed authenticity
+            through a transparent and immutable on-chain audit trail.
           </p>
 
           <!-- Network Status Bar — scroll-x pada xs jika terlalu panjang -->
@@ -705,7 +704,7 @@
         <!-- Section header — wrap di xs agar badge tidak terpotong -->
         <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
           <div class="flex-shrink-0">
-            <div class="phase-badge text-silver mb-1">◆ FASE 01 · AKUISISI</div>
+            <div class="phase-badge text-silver mb-1">◆ PHASE 01 · ACQUISITION</div>
             <h2
               id="section-buy-heading"
               class="font-display font-black text-white text-lg sm:text-2xl tracking-tight"
@@ -721,7 +720,7 @@
           <div
             class="ticket-card rounded-xl p-0 overflow-hidden"
             role="img"
-            aria-label="Tiket konser Arctic Monkeys"
+            aria-label="Arctic Monkeys concert ticket"
           >
             <!--
             Layout tiket: flex row di semua breakpoint.
@@ -854,12 +853,12 @@
           <div class="glass-card rounded-xl p-6 sm:p-7 flex flex-col gap-5">
             <div>
               <h3 class="font-display font-bold text-white text-base mb-1">
-                Beli Tiket On-Chain
+                Buy Ticket On-Chain
               </h3>
               <p class="text-silver/60 text-xs leading-relaxed">
-                Tiket Anda akan di-mint sebagai token ERC-721 yang terverifikasi
-                di Sepolia blockchain. Setiap tiket memiliki ID unik yang
-                terekam secara permanen.
+                Your ticket will be minted as a verified ERC-721 token on the
+                Sepolia blockchain. Each ticket has a unique ID recorded
+                permanently.
               </p>
             </div>
 
@@ -868,11 +867,11 @@
             <!-- Price Breakdown -->
             <div class="space-y-2 text-xs">
               <div class="flex justify-between text-silver">
-                <span>Harga Tiket</span>
+                <span>Ticket Price</span>
                 <span class="font-mono text-ghost">0.01 ETH</span>
               </div>
               <div class="flex justify-between text-silver">
-                <span>Gas Fee (estimasi)</span>
+                <span>Gas Fee (estimate)</span>
                 <span class="font-mono">~0.0001 ETH</span>
               </div>
               <div class="scanline-divider"></div>
@@ -888,7 +887,7 @@
                 <p
                   class="text-silver/50 text-[10px] uppercase tracking-widest mb-1"
                 >
-                  Ticket ID Anda
+                  Your Ticket ID
                 </p>
                 <p
                   id="buy-result-id"
@@ -903,7 +902,7 @@
               id="btn-buy-ticket"
               class="btn-primary w-full py-3 px-6 rounded text-sm flex items-center justify-center gap-2"
               disabled
-              aria-label="Beli tiket konser Arctic Monkeys"
+              aria-label="Buy Arctic Monkeys concert ticket"
             >
               <svg
                 width="15"
@@ -925,8 +924,8 @@
             </button>
 
             <p class="text-silver/40 text-[10px] leading-relaxed">
-              ⚑ Transaksi bersifat irreversible. Pastikan Anda terhubung ke
-              jaringan Sepolia Testnet sebelum membeli.
+              ⚑ Transactions are irreversible. Make sure you are connected to the
+              Sepolia Testnet network before buying.
             </p>
           </div>
         </div>
@@ -939,7 +938,7 @@
         <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
           <div class="flex-shrink-0">
             <div class="phase-badge text-silver mb-1">
-              ◆ FASE 02 · SIRKULASI
+              ◆ PHASE 02 · CIRCULATION
             </div>
             <h2
               id="section-transfer-heading"
@@ -972,9 +971,9 @@
                   id="transfer-ticket-id"
                   type="number"
                   min="0"
-                  placeholder="Contoh: 1"
+                  placeholder="Example: 1"
                   class="input-field w-full px-4 py-3 rounded text-sm"
-                  aria-label="Masukkan Ticket ID untuk transfer"
+                  aria-label="Enter Ticket ID for transfer"
                 />
               </div>
               <div>
@@ -989,14 +988,14 @@
                   type="text"
                   placeholder="0x..."
                   class="input-field w-full px-4 py-3 rounded text-sm font-mono"
-                  aria-label="Masukkan alamat MetaMask penerima tiket"
+                  aria-label="Enter recipient's MetaMask wallet address"
                 />
               </div>
               <button
                 id="btn-transfer-ticket"
                 class="btn-secondary w-full py-3 px-6 rounded text-sm flex items-center justify-center gap-2"
                 disabled
-                aria-label="Transfer kepemilikan tiket"
+                aria-label="Transfer ticket ownership"
               >
                 <svg
                   width="15"
@@ -1018,32 +1017,31 @@
             <div class="flex flex-col justify-between gap-4">
               <div class="space-y-3">
                 <h3 class="font-display font-bold text-white text-sm">
-                  Mekanisme Transfer On-Chain
+                  On-Chain Transfer Mechanism
                 </h3>
                 <div class="space-y-2.5 text-xs text-silver/70 leading-relaxed">
                   <div class="flex items-start gap-2.5">
                     <span class="text-white/40 mt-0.5 flex-shrink-0">▸</span>
                     <span
-                      >Transfer dipanggil langsung dari smart contract melalui
-                      fungsi
+                      >Transfer is called directly from the smart contract via the
                       <code
                         class="text-ghost bg-white/[0.06] px-1 py-0.5 rounded text-[10px]"
                         >transferTicket()</code
-                      ></span
+                      > function.</span
                     >
                   </div>
                   <div class="flex items-start gap-2.5">
                     <span class="text-white/40 mt-0.5 flex-shrink-0">▸</span>
                     <span
-                      >Hanya pemilik tiket saat ini yang berhak melakukan
-                      transfer (divalidasi oleh kontrak).</span
+                      >Only the current owner of the ticket has the right to perform
+                      the transfer (validated by the contract).</span
                     >
                   </div>
                   <div class="flex items-start gap-2.5">
                     <span class="text-white/40 mt-0.5 flex-shrink-0">▸</span>
                     <span
-                      >Setiap transfer terekam secara permanen sebagai event
-                      on-chain yang dapat diaudit siapa saja.</span
+                      >Each transfer is permanently recorded as an on-chain event
+                      that can be audited by anyone.</span
                     >
                   </div>
                 </div>
@@ -1056,17 +1054,16 @@
                 <p
                   class="text-white/50 uppercase tracking-widest text-[10px] mb-1.5"
                 >
-                  ⚐ Catatan Keamanan
+                  ⚐ Security Note
                 </p>
                 <p class="text-silver/70 leading-relaxed">
-                  Pemilik lama
+                  The previous owner
                   <strong class="text-ghost"
-                    >otomatis kehilangan hak akses</strong
+                    >automatically loses access</strong
                   >
-                  setelah transfer berhasil. Sistem ini mencegah
-                  <em>Double-Spending</em> — tiket yang sama tidak dapat
-                  digunakan lebih dari sekali atau oleh lebih dari satu pihak
-                  secara bersamaan.
+                  after a successful transfer. This system prevents
+                  <em>Double-Spending</em> — the same ticket cannot be used
+                  more than once or by more than one party at the same time.
                 </p>
               </div>
             </div>
@@ -1081,7 +1078,7 @@
         <!-- Section Header Row — wrap di xs agar badge tidak overflow -->
         <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-5 sm:mb-6">
           <div class="flex-shrink-0">
-            <div class="phase-badge text-silver mb-1">◆ FASE 03 · KONSUMSI</div>
+            <div class="phase-badge text-silver mb-1">◆ PHASE 03 · CONSUMPTION</div>
             <h2
               id="section-validate-heading"
               class="font-display font-black text-white text-lg sm:text-2xl tracking-tight"
@@ -1120,7 +1117,7 @@
           <div
             id="lock-overlay"
             role="status"
-            aria-label="Akses terkunci — hanya untuk Promotor/Admin"
+            aria-label="Access locked — for Promoter/Admin only"
             class="absolute inset-0 z-20 rounded-xl backdrop-blur-xl bg-black/95 flex flex-col items-center justify-center text-center px-6 py-10"
           >
             <!-- Ikon Gembok -->
@@ -1144,16 +1141,16 @@
             <p
               class="font-display font-black text-white/60 text-sm uppercase tracking-widest mb-2"
             >
-              AKSES TERBATAS
+              RESTRICTED ACCESS
             </p>
 
             <!-- Sub-teks -->
             <p
               class="text-silver/50 text-xs leading-relaxed max-w-[280px] mb-4"
             >
-              Fitur ini hanya tersedia untuk
-              <strong class="text-silver/80">Promotor / Admin</strong> kontrak.
-              Hubungkan wallet dengan alamat admin untuk membuka akses.
+              This feature is only available to the contract
+              <strong class="text-silver/80">Promoter / Admin</strong>.
+              Connect a wallet with the admin address to unlock access.
             </p>
 
             <!-- RBAC Label -->
@@ -1181,15 +1178,15 @@
                     for="validate-ticket-id"
                     class="block text-silver/70 text-xs uppercase tracking-widest mb-2"
                   >
-                    Ticket ID untuk Divalidasi
+                    Ticket ID to Validate
                   </label>
                   <input
                     id="validate-ticket-id"
                     type="number"
                     min="0"
-                    placeholder="Masukkan Ticket ID"
+                    placeholder="Enter Ticket ID"
                     class="input-field w-full px-4 py-3 rounded text-sm"
-                    aria-label="Masukkan Ticket ID untuk validasi di pintu masuk"
+                    aria-label="Enter Ticket ID for validation at entrance"
                   />
                 </div>
 
@@ -1208,7 +1205,7 @@
                   id="btn-validate-ticket"
                   class="btn-primary w-full py-3 px-6 rounded text-sm flex items-center justify-center gap-2"
                   disabled
-                  aria-label="Validasi tiket dan buka gerbang masuk konser"
+                  aria-label="Validate ticket and open concert entrance gate"
                 >
                   <svg
                     width="15"
@@ -1233,37 +1230,31 @@
               <!-- ── Kolom Kanan: Info & RBAC ── -->
               <div class="space-y-4">
                 <h3 class="font-display font-bold text-white text-sm">
-                  Protokol Verifikasi Gatekeeper
+                  Gatekeeper Verification Protocol
                 </h3>
                 <div class="space-y-2.5 text-xs text-silver/70 leading-relaxed">
                   <div class="flex items-start gap-2.5">
                     <span class="text-white/40 mt-0.5 flex-shrink-0">▸</span>
                     <span
-                      >Fungsi
-                      <code
+                      >The <code
                         class="text-ghost bg-white/[0.06] px-1 py-0.5 rounded text-[10px]"
                         >validateTicket()</code
-                      >
-                      hanya dapat dipanggil oleh admin/promotor.</span
+                      > function can only be called by the admin/promoter.</span
                     >
                   </div>
                   <div class="flex items-start gap-2.5">
                     <span class="text-white/40 mt-0.5 flex-shrink-0">▸</span>
                     <span
-                      >Tiket yang sudah divalidasi akan ditandai
-                      <em>isUsed = true</em> dan tidak dapat digunakan
-                      kembali.</span
+                      >Validated tickets will be marked as <em>isUsed = true</em> and cannot be reused.</span
                     >
                   </div>
                   <div class="flex items-start gap-2.5">
                     <span class="text-white/40 mt-0.5 flex-shrink-0">▸</span>
                     <span
-                      >Proses validasi memancarkan event
-                      <code
+                      >The validation process emits a <code
                         class="text-ghost bg-white/[0.06] px-1 py-0.5 rounded text-[10px]"
                         >TicketValidated</code
-                      >
-                      yang tercatat permanen di blockchain.</span
+                      > event, which is permanently recorded on the blockchain.</span
                     >
                   </div>
                 </div>
@@ -1278,15 +1269,13 @@
                     🔐 Role-Based Access Control
                   </p>
                   <p class="text-silver/60 text-xs leading-relaxed">
-                    Kontrol akses diimplementasikan di dua lapisan: lapisan
-                    <strong class="text-ghost">UI</strong> (overlay + disabled
-                    state) dan lapisan
-                    <strong class="text-ghost">smart contract</strong> (<code
+                    Access control is implemented on two levels: the
+                    <strong class="text-ghost">UI</strong> layer (overlay + disabled
+                    state) and the
+                    <strong class="text-ghost">smart contract</strong> layer (<code
                       class="text-[10px] bg-white/[0.06] px-1 rounded"
                       >contract.admin()</code
-                    >
-                    check), memberikan proteksi berlapis terhadap akses tidak
-                    sah.
+                    > check), providing multi-layered protection against unauthorized access.
                   </p>
                 </div>
               </div>
@@ -1312,8 +1301,7 @@
               My Tickets History
             </h2>
             <p class="text-silver/60 text-xs sm:text-sm mt-2">
-              Daftar semua tiket yang telah Anda beli. Data disimpan secara
-              lokal di browser Anda.
+              List of all tickets you have purchased. Data is stored locally in your browser.
             </p>
           </div>
 
@@ -1323,7 +1311,7 @@
             <div id="my-tickets-list" class="space-y-3">
               <div class="text-center py-8">
                 <p class="text-silver/50 text-sm">
-                  Anda belum membeli tiket apapun
+                  You haven't purchased any tickets yet
                 </p>
               </div>
             </div>
@@ -1335,7 +1323,7 @@
               <button
                 id="btn-refresh-tickets"
                 class="btn-secondary px-4 py-2 rounded text-xs flex items-center justify-center gap-2"
-                aria-label="Muat ulang daftar tiket"
+                aria-label="Reload ticket list"
               >
                 <svg
                   width="14"
@@ -1358,7 +1346,7 @@
               <button
                 id="btn-clear-tickets"
                 class="btn-secondary px-4 py-2 rounded text-xs flex items-center justify-center gap-2"
-                aria-label="Hapus riwayat tiket"
+                aria-label="Clear ticket history"
               >
                 <svg
                   width="14"
@@ -1414,7 +1402,7 @@
             <span>AM-TICKETS · ON-CHAIN AUDIT SYSTEM</span>
           </div>
           <div class="text-center sm:text-right">
-            <p>UAS · Keamanan Data dan Informasi · 2026</p>
+            <p>UAS · Data &amp; Information Security · 2026</p>
             <p class="mt-0.5">
               Deployed on
               <span class="font-mono text-ghost/60">SEPOLIA TESTNET</span>

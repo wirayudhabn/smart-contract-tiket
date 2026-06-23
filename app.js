@@ -363,7 +363,7 @@ function showToast(type, title, msg, duration = 5000) {
       <div class="toast-title">${title}</div>
       <div class="toast-msg">${msg}</div>
     </div>
-    <button class="toast-close" aria-label="Tutup notifikasi">✕</button>
+    <button class="toast-close" aria-label="Close notification">✕</button>
   `;
 
   toastContainer.appendChild(toast);
@@ -412,11 +412,11 @@ function parseError(err) {
   if (err?.reason) return err.reason;
   if (err?.data?.message) return err.data.message;
   if (err?.error?.data?.message) return err.error.data.message;
-  if (err?.message?.includes("user rejected")) return "Transaksi ditolak oleh pengguna.";
-  if (err?.message?.includes("insufficient funds")) return "Saldo ETH tidak cukup untuk membayar.";
-  if (err?.message?.includes("network changed")) return "Jaringan berubah, silakan koneksikan ulang.";
+  if (err?.message?.includes("user rejected")) return "Transaction rejected by user.";
+  if (err?.message?.includes("insufficient funds")) return "Insufficient ETH balance.";
+  if (err?.message?.includes("network changed")) return "Network changed, please reconnect.";
   if (err?.message) return err.message.slice(0, 120);
-  return "Terjadi kesalahan yang tidak diketahui.";
+  return "An unknown error occurred.";
 }
 
 /**
@@ -430,7 +430,7 @@ function parseError(err) {
 function setLoading(btn, label, loading, originalLabel = "") {
   if (loading) {
     btn.disabled = true;
-    label.innerHTML = `<svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Memproses...`;
+    label.innerHTML = `<svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing...`;
   } else {
     btn.disabled = false;
     label.textContent = originalLabel;
@@ -466,8 +466,8 @@ btnConnectWallet.addEventListener("click", async () => {
 async function connectWallet() {
   // Guard: pastikan MetaMask tersedia
   if (!window.ethereum) {
-    showToast("error", "MetaMask Tidak Ditemukan",
-      "Instal ekstensi MetaMask di browser Anda untuk menggunakan aplikasi ini.");
+    showToast("error", "MetaMask Not Found",
+      "Install the MetaMask extension in your browser to use this application.");
     return;
   }
 
@@ -486,8 +486,8 @@ async function connectWallet() {
     // ── Verifikasi Jaringan ──────────────────────────────────
     const network = await provider.getNetwork();
     if (network.chainId !== SEPOLIA_CHAIN_ID) {
-      showToast("error", "Jaringan Salah",
-        `Anda terhubung ke chain ID ${network.chainId}. Harap pindah ke Sepolia Testnet (chain ID 11155111).`);
+      showToast("error", "Wrong Network",
+        `You are connected to chain ID ${network.chainId}. Please switch to Sepolia Testnet (chain ID 11155111).`);
       disconnectWallet();
       return;
     }
@@ -501,12 +501,12 @@ async function connectWallet() {
     // ── Cek Role (Owner vs Fan) ─────────────────────────────
     await checkOwnerRole();
 
-    showToast("success", "Wallet Terhubung",
-      `Akun ${shortenAddress(walletAddress)} berhasil terhubung ke Sepolia Testnet.`);
+    showToast("success", "Wallet Connected",
+      `Account ${shortenAddress(walletAddress)} successfully connected to Sepolia Testnet.`);
 
   } catch (err) {
     const msg = parseError(err);
-    showToast("error", "Koneksi Gagal", msg);
+    showToast("error", "Connection Failed", msg);
     disconnectWallet();
   } finally {
     // Reset loading state tombol connect (label sudah diubah oleh updateWalletUI)
@@ -613,10 +613,10 @@ async function checkOwnerRole() {
   roleBadgeWrapper.classList.remove("hidden");
 
   if (isOwner) {
-    roleBadge.textContent = "ROLE: PROMOTOR / ADMIN";
+    roleBadge.textContent = "ROLE: PROMOTER / ADMIN";
     roleBadge.className = "role-badge promotor";
   } else {
-    roleBadge.textContent = "ROLE: FAN / PENONTON";
+    roleBadge.textContent = "ROLE: FAN / SPECTATOR";
     roleBadge.className = "role-badge fan";
   }
 
@@ -683,7 +683,7 @@ btnBuyTicket.addEventListener("click", async () => {
 
     // 2. Panggil fungsi buyTicket di smart contract dan kirim value ETH
     const tx = await contract.buyTicket({ value: ticketPrice });
-    showToast("info", "Memproses...", "Harap tunggu transaksi dikonfirmasi.");
+    showToast("info", "Processing...", "Please wait for transaction confirmation.");
 
     // 3. Tunggu hingga transaksi dikonfirmasi oleh jaringan (1 block)
     const receipt = await tx.wait(1);
@@ -701,11 +701,11 @@ btnBuyTicket.addEventListener("click", async () => {
     // 6. Simpan riwayat tiket ke Local Storage (sudah ada di fungsi Anda)
     saveTicketToStorage(ticketId, receipt.hash);
 
-    showToast("success", "Pembelian Berhasil", `Anda berhasil membeli tiket dengan ID #${ticketId}.`);
+    showToast("success", "Purchase Successful", `You successfully purchased a ticket with ID #${ticketId}.`);
 
   } catch (err) {
     const msg = parseError(err);
-    showToast("error", "Pembelian Gagal", msg);
+    showToast("error", "Purchase Failed", msg);
   } finally {
     setLoading(btnBuyTicket, btnBuyLabel, false, "BUY TICKET — 0.01 ETH");
   }
@@ -736,19 +736,19 @@ btnTransferTicket.addEventListener("click", async () => {
 
   // ── Validasi Input Sisi Klien ────────────────────────────
   if (ticketIdRaw === "" || isNaN(Number(ticketIdRaw)) || Number(ticketIdRaw) < 0) {
-    showToast("error", "Input Tidak Valid", "Masukkan Ticket ID yang valid (angka ≥ 0).");
+    showToast("error", "Invalid Input", "Enter a valid Ticket ID (number ≥ 0).");
     return;
   }
 
   if (!ethers.isAddress(recipientAddr)) {
-    showToast("error", "Alamat Tidak Valid",
-      "Masukkan alamat MetaMask penerima yang valid (format 0x...).");
+    showToast("error", "Invalid Address",
+      "Enter a valid recipient MetaMask address (format 0x...).");
     return;
   }
 
   if (recipientAddr.toLowerCase() === walletAddress?.toLowerCase()) {
-    showToast("error", "Transfer ke Diri Sendiri",
-      "Anda tidak dapat mentransfer tiket ke alamat Anda sendiri.");
+    showToast("error", "Transfer to Self",
+      "You cannot transfer a ticket to your own address.");
     return;
   }
 
@@ -760,8 +760,8 @@ btnTransferTicket.addEventListener("click", async () => {
     // Panggil fungsi transferTicket() di kontrak
     const tx = await contract.transferTicket(ticketId, recipientAddr);
 
-    showToast("info", "Transaksi Dikirim",
-      `Transfer sedang diproses... Hash: ${shortenAddress(tx.hash)}`);
+    showToast("info", "Transaction Sent",
+      `Transfer is being processed... Hash: ${shortenAddress(tx.hash)}`);
 
     await tx.wait(1);
 
@@ -769,12 +769,12 @@ btnTransferTicket.addEventListener("click", async () => {
     inputTransferId.value = "";
     inputTransferRecip.value = "";
 
-    showToast("success", "Transfer Berhasil! ✓",
-      `Tiket #${ticketIdRaw} telah dipindahkan ke ${shortenAddress(recipientAddr)}. Anda tidak lagi memiliki akses ke tiket ini.`);
+    showToast("success", "Transfer Successful! ✓",
+      `Ticket #${ticketIdRaw} has been transferred to ${shortenAddress(recipientAddr)}. You no longer have access to this ticket.`);
 
   } catch (err) {
     const msg = parseError(err);
-    showToast("error", "Transfer Gagal", msg);
+    showToast("error", "Transfer Failed", msg);
   } finally {
     setLoading(btnTransferTicket, btnTransferLabel, false, "TRANSFER TICKET");
   }
@@ -803,15 +803,15 @@ btnValidateTicket.addEventListener("click", async () => {
 
   // Guard RBAC sisi klien
   if (!isOwner) {
-    showToast("error", "Akses Ditolak",
-      "Hanya Promotor / Owner kontrak yang dapat memvalidasi tiket.");
+    showToast("error", "Access Denied",
+      "Only the Promoter / Contract Owner can validate tickets.");
     return;
   }
 
   const ticketIdRaw = inputValidateId.value.trim();
 
   if (ticketIdRaw === "" || isNaN(Number(ticketIdRaw)) || Number(ticketIdRaw) < 0) {
-    showToast("error", "Input Tidak Valid", "Masukkan Ticket ID yang valid (angka ≥ 0).");
+    showToast("error", "Invalid Input", "Enter a valid Ticket ID (number ≥ 0).");
     return;
   }
 
@@ -833,33 +833,33 @@ btnValidateTicket.addEventListener("click", async () => {
 
     if (alreadyUsed) {
       showValidationResult(false, ticketIdRaw,
-        "Tiket ini sudah pernah digunakan / divalidasi sebelumnya.", "ALREADY USED");
-      showToast("error", "Tiket Tidak Valid",
-        `Tiket #${ticketIdRaw} sudah pernah dipakai (status: USED).`);
+        "This ticket has already been used / validated.", "ALREADY USED");
+      showToast("error", "Invalid Ticket",
+        `Ticket #${ticketIdRaw} has already been used (status: USED).`);
       return;
     }
 
     // Kirim transaksi validasi
     const tx = await contract.validateTicket(ticketId);
 
-    showToast("info", "Validasi Sedang Diproses",
-      `Menunggu konfirmasi blok... Hash: ${shortenAddress(tx.hash)}`);
+    showToast("info", "Validation in Progress",
+      `Waiting for block confirmation... Hash: ${shortenAddress(tx.hash)}`);
 
     await tx.wait(1);
 
     // Tampilkan hasil sukses
     showValidationResult(true, ticketIdRaw,
-      "Tiket valid. Pemegang tiket diizinkan masuk ke venue.", "VERIFIED & CONSUMED");
+      "Ticket is valid. The ticket holder is permitted to enter the venue.", "VERIFIED & CONSUMED");
 
     inputValidateId.value = "";
 
-    showToast("success", "GERBANG TERBUKA ✓",
-      `Tiket #${ticketIdRaw} berhasil divalidasi. Event TicketValidated terekam di blockchain.`, 7000);
+    showToast("success", "GATE OPENED ✓",
+      `Ticket #${ticketIdRaw} successfully validated. TicketValidated event recorded on blockchain.`, 7000);
 
   } catch (err) {
     const msg = parseError(err);
     showValidationResult(false, ticketIdRaw, msg, "VALIDATION FAILED");
-    showToast("error", "Validasi Gagal", msg);
+    showToast("error", "Validation Failed", msg);
   } finally {
     setLoading(btnValidateTicket, btnValidateLabel, false, "VALIDATE TICKET & OPEN GATE");
   }
@@ -909,7 +909,7 @@ if (window.ethereum) {
     if (accounts.length === 0) {
       // User memutus semua akun dari MetaMask
       disconnectWallet();
-      showToast("info", "Wallet Terputus", "MetaMask tidak memiliki akun aktif.");
+      showToast("info", "Wallet Disconnected", "MetaMask has no active account.");
     } else {
       // Akun berganti, perbarui state
       disconnectWallet();
@@ -923,8 +923,8 @@ if (window.ethereum) {
    */
   window.ethereum.on("chainChanged", () => {
     disconnectWallet();
-    showToast("info", "Jaringan Berubah",
-      "Jaringan MetaMask berubah. Pastikan Anda menggunakan Sepolia Testnet, lalu connect ulang.");
+    showToast("info", "Network Changed",
+      "MetaMask network changed. Please ensure you are using Sepolia Testnet, then reconnect.");
   });
 }
 
@@ -969,7 +969,7 @@ function loadMyTickets() {
     if (tickets.length === 0) {
       myTicketsList.innerHTML = `
         <div class="text-center py-8">
-          <p class="text-silver/50 text-sm">Anda belum membeli tiket apapun</p>
+          <p class="text-silver/50 text-sm">You haven't purchased any tickets yet</p>
         </div>
       `;
       return;
@@ -986,9 +986,9 @@ function loadMyTickets() {
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-2 flex-wrap">
             <span class="text-ghost font-mono font-bold text-sm">#${ticket.id}</span>
-            <span class="text-[10px] text-silver/50 bg-white/[0.05] px-2 py-0.5 rounded">Tiket ${index + 1}</span>
+            <span class="text-[10px] text-silver/50 bg-white/[0.05] px-2 py-0.5 rounded">Ticket ${index + 1}</span>
           </div>
-          <p class="text-silver/60 text-xs mb-2">Dibeli: ${ticket.bought}</p>
+          <p class="text-silver/60 text-xs mb-2">Purchased: ${ticket.bought}</p>
           ${ticket.txHash ? `<a href="${etherscanLink}" target="_blank" class="text-[10px] text-silver hover:text-ghost transition font-mono flex items-center gap-1">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;">
               <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
@@ -1052,7 +1052,7 @@ function setupMyTicketsEventListeners() {
   });
 
   btnClearTickets?.addEventListener("click", () => {
-    if (confirm("Hapus semua riwayat tiket? Aksi ini tidak dapat dibatalkan.")) {
+    if (confirm("Delete all ticket history? This action cannot be undone.")) {
       localStorage.removeItem("amTickets");
       loadMyTickets();
       showToast("success", "Cleared", "Ticket history cleared.");
