@@ -15,7 +15,7 @@
 // ============================================================
 
 /** @type {string} Alamat smart contract hasil deploy di Sepolia */
-const CONTRACT_ADDRESS = "0x03CdB72D9eED941b8D1Bd359eB264f4B8D419c28";
+const CONTRACT_ADDRESS = "0xc17a578de92486982E33BE15e215E4aa9c8Ab177";
 
 /**
  * @type {Array} ABI dari smart contract ConcertTicketing.
